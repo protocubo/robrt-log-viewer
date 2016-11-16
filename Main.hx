@@ -7,10 +7,12 @@ import js.jquery.Helper.*;
 class Main {
 	static function parseCommand(lines:Array<String>):Command
 	{
-		var bpat = ~/robrt: started cmd <(\d+)>: ([a-zA-Z0-9\+\/=]+): (\d+).(\d+)/i;
-		var epat = ~/robrt: finished cmd <(\d+)> with status <(\d+)>: (\d+).(\d+)/i;
+		var bpat = ~/robrt: started cmd <(\d+)>: ([a-zA-Z0-9\+\/=]+): (\d+).(\d+)/i;  // TODO support old logs
+		var epat = ~/robrt: finished cmd <(\d+)> with status <(\d+)>: (\d+).(\d+)/i;  // TODO support old logs
 
 		var fst = lines.shift();
+		if (StringTools.startsWith(fst, "+ "))
+			fst = lines.shift();
 		assert(bpat.match(fst), fst);
 
 		var no = bpat.matched(1);
@@ -65,7 +67,7 @@ class Main {
 		}
 		show(rawLogUrl);
 
-		var raw = haxe.Http.requestUrl(rawLogUrl);  // FIXME async
+		var raw = haxe.Http.requestUrl(rawLogUrl);  // TODO make this async
 		show(raw.length);
 
 		var log = parseLog(raw);

@@ -101,8 +101,11 @@ Main.parseCommand = function(lines) {
 	var bpat = new EReg("robrt: started cmd <(\\d+)>: ([a-zA-Z0-9\\+/=]+): (\\d+).(\\d+)","i");
 	var epat = new EReg("robrt: finished cmd <(\\d+)> with status <(\\d+)>: (\\d+).(\\d+)","i");
 	var fst = lines.shift();
+	if(StringTools.startsWith(fst,"+ ")) {
+		fst = lines.shift();
+	}
 	if(Assertion.enableAssert && !bpat.match(fst)) {
-		haxe_Log.trace("[assert] fst=" + fst,{ fileName : "Main.hx", lineNumber : 14, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("[assert] fst=" + fst,{ fileName : "Main.hx", lineNumber : 16, className : "Main", methodName : "parseCommand"});
 		throw new js__$Boot_HaxeError("Assertion failed: " + "bpat.match(fst)");
 	}
 	var no = bpat.matched(1);
@@ -111,7 +114,7 @@ Main.parseCommand = function(lines) {
 	var output = [];
 	while(true) {
 		if(Assertion.enableAssert && lines.length <= 0) {
-			haxe_Log.trace("[assert] lines.length=" + lines.length,{ fileName : "Main.hx", lineNumber : 21, className : "Main", methodName : "parseCommand"});
+			haxe_Log.trace("[assert] lines.length=" + lines.length,{ fileName : "Main.hx", lineNumber : 23, className : "Main", methodName : "parseCommand"});
 			throw new js__$Boot_HaxeError("Assertion failed: " + "lines.length > 0");
 		}
 		if(!(!epat.match(lines[0]))) {
@@ -125,7 +128,7 @@ Main.parseCommand = function(lines) {
 		output.push(cur);
 	}
 	if(Assertion.enableAssert && lines.length < 1) {
-		haxe_Log.trace("[assert] lines.length=" + lines.length,{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("[assert] lines.length=" + lines.length,{ fileName : "Main.hx", lineNumber : 30, className : "Main", methodName : "parseCommand"});
 		throw new js__$Boot_HaxeError("Assertion failed: " + "lines.length >= 1");
 	}
 	lines.shift();
@@ -136,13 +139,13 @@ Main.parseCommand = function(lines) {
 	var finish = (parseFloat(epat.matched(3)) + parseFloat(epat.matched(4)) / 1e9) * 1e3;
 	var duration = finish - start;
 	if(Assertion.enableShow) {
-		haxe_Log.trace("no=" + no,{ fileName : "Main.hx", lineNumber : 36, className : "Main", methodName : "parseCommand"});
-		haxe_Log.trace("cmd=" + cmd,{ fileName : "Main.hx", lineNumber : 36, className : "Main", methodName : "parseCommand"});
-		haxe_Log.trace("exit=" + exit,{ fileName : "Main.hx", lineNumber : 36, className : "Main", methodName : "parseCommand"});
-		haxe_Log.trace("start=" + start,{ fileName : "Main.hx", lineNumber : 36, className : "Main", methodName : "parseCommand"});
-		haxe_Log.trace("finish=" + finish,{ fileName : "Main.hx", lineNumber : 36, className : "Main", methodName : "parseCommand"});
-		haxe_Log.trace("duration=" + duration,{ fileName : "Main.hx", lineNumber : 36, className : "Main", methodName : "parseCommand"});
-		haxe_Log.trace("output.length=" + output.length,{ fileName : "Main.hx", lineNumber : 36, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("no=" + no,{ fileName : "Main.hx", lineNumber : 38, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("cmd=" + cmd,{ fileName : "Main.hx", lineNumber : 38, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("exit=" + exit,{ fileName : "Main.hx", lineNumber : 38, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("start=" + start,{ fileName : "Main.hx", lineNumber : 38, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("finish=" + finish,{ fileName : "Main.hx", lineNumber : 38, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("duration=" + duration,{ fileName : "Main.hx", lineNumber : 38, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("output.length=" + output.length,{ fileName : "Main.hx", lineNumber : 38, className : "Main", methodName : "parseCommand"});
 	}
 	return { cmd : cmd, exit : exit, duration : duration, output : output};
 };
@@ -151,7 +154,7 @@ Main.parseLog = function(raw) {
 	var cmds = [];
 	while(lines.length > 0 && lines[0] != "") cmds.push(Main.parseCommand(lines));
 	if(Assertion.enableShow) {
-		haxe_Log.trace("cmds.length=" + cmds.length,{ fileName : "Main.hx", lineNumber : 52, className : "Main", methodName : "parseLog"});
+		haxe_Log.trace("cmds.length=" + cmds.length,{ fileName : "Main.hx", lineNumber : 54, className : "Main", methodName : "parseLog"});
 	}
 	return cmds;
 };
@@ -173,6 +176,9 @@ Main.renderCommand = function(cmd,opts) {
 	if(cmd.exit != "0") {
 		ret.push("expand");
 	}
+	if(cmd.output.length == 0) {
+		ret.push("mepty");
+	}
 	ret.push("\">\n\t");
 	var _g = 0;
 	var _g1 = cmd.output;
@@ -192,17 +198,17 @@ Main.render = function() {
 	var arg = window.location.search;
 	var pat = new EReg("^\\?(.+)$","");
 	if(Assertion.enableAssert && !pat.match(arg)) {
-		haxe_Log.trace("[assert] arg=" + arg,{ fileName : "Main.hx", lineNumber : 63, className : "Main", methodName : "render"});
+		haxe_Log.trace("[assert] arg=" + arg,{ fileName : "Main.hx", lineNumber : 65, className : "Main", methodName : "render"});
 		throw new js__$Boot_HaxeError("Assertion failed: " + "pat.match(arg)");
 	}
 	var s = pat.matched(1);
 	var rawLogUrl = decodeURIComponent(s.split("+").join(" "));
 	if(Assertion.enableShow) {
-		haxe_Log.trace("rawLogUrl=" + rawLogUrl,{ fileName : "Main.hx", lineNumber : 66, className : "Main", methodName : "render"});
+		haxe_Log.trace("rawLogUrl=" + rawLogUrl,{ fileName : "Main.hx", lineNumber : 68, className : "Main", methodName : "render"});
 	}
 	var raw = haxe_Http.requestUrl(rawLogUrl);
 	if(Assertion.enableShow) {
-		haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 69, className : "Main", methodName : "render"});
+		haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 71, className : "Main", methodName : "render"});
 	}
 	var log = Main.parseLog(raw);
 	var container = $("#log-container");
@@ -222,6 +228,15 @@ var Std = function() { };
 Std.__name__ = true;
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
+};
+var StringTools = function() { };
+StringTools.__name__ = true;
+StringTools.startsWith = function(s,start) {
+	if(s.length >= start.length) {
+		return HxOverrides.substr(s,0,start.length) == start;
+	} else {
+		return false;
+	}
 };
 var haxe_Http = function(url) {
 	this.url = url;

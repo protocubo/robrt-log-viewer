@@ -4,7 +4,7 @@
 		<span class="duration">(:Math.round(cmd.duration*1e3)/1e3:)</span>
 		<span class="exit-code (:if cmd.exit != "0":)alert(:end:)">(:cmd.exit:)</span>
 	</div>
-	<div class="output (:if cmd.exit != "0":)expand(:end:)">
+	<div class="output (:if cmd.exit != "0":)expand(:end:) (:if cmd.output.length == 0:)mepty(:end:)">
 	(:for li in cmd.output:)
 		<pre><code><span class="line-number">(:opts.lineNumber++:)</span>(:li:)</code></pre>
 	(:end:)

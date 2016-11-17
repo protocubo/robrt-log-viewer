@@ -1,4 +1,4 @@
-<div class="cmd-container (:if cmd.output.length > 0:)allow-expansion(:end:) (:if cmd.exit != "0":)expanded(:end:)">
+<div class="cmd-container (:if cmd.output.length > 0:) allow-expansion (:end:)(:if cmd.exit != "0":) expanded (:end:)">(:* TODO remove hack for tink_template's issue with whitespace between ifs *:)
 	<div class="cmd">
 		<pre><code><span class="line-number">(:opts.lineNumber++:)</span>$ (:cmd.cmd:)<span class="exit-code (:if cmd.exit != "0":)alert(:end:)">(:cmd.exit:)</span>(:if cmd.duration != null:)<span class="duration">(:Math.round(cmd.duration)/1e3:)s</span>(:end:)</code></pre>
 	</div>

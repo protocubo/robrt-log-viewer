@@ -7,17 +7,22 @@ import js.jquery.Helper.*;
 class Main {
 	static function parseCommand(lines:Array<String>):Command
 	{
-		var bpat = ~/robrt: started cmd <(\d+)>: ([a-zA-Z0-9\+\/=]+): (\d+).(\d+)/i;  // TODO support old logs
-		var epat = ~/robrt: finished cmd <(\d+)> with status <(\d+)>: (\d+).(\d+)/i;  // TODO support old logs
+		var bpat = ~/robrt: start(ed|ing) cmd <(\d+)>(: ([a-zA-Z0-9\+\/=]+): (\d+).(\d+))?/i;
+		var epat = ~/robrt: finished cmd <(\d+)> with status <(\d+)>(: (\d+).(\d+))?/i;
 
+		var prefix = null;
 		var fst = lines.shift();
-		if (StringTools.startsWith(fst, "+ "))
+		if (StringTools.startsWith(fst, "+ ")) {
+			prefix = fst;
 			fst = lines.shift();
+		}
 		assert(bpat.match(fst), fst);
 
-		var no = bpat.matched(1);
-		var cmd = haxe.crypto.Base64.decode(bpat.matched(2)).toString();
-		var start = (Std.parseFloat(bpat.matched(3)) + Std.parseFloat(bpat.matched(4))/1e9)*1e3;
+		var inCompatMode = bpat.matched(3) == null;
+		assert((inCompatMode && prefix != null) || !inCompatMode, bpat.matched(3), inCompatMode, prefix, "the command must either come from header or from the prefix");
+
+		var no = bpat.matched(2);
+		var cmd = inCompatMode ? prefix.substr(2) : haxe.crypto.Base64.decode(bpat.matched(4)).toString();
 
 		var output = [];
 		while ({ assert(lines.length > 0, lines.length); !epat.match(lines[0]); }) {
@@ -32,10 +37,18 @@ class Main {
 
 		assert(epat.matched(1) == no);
 		var exit = epat.matched(2);
-		var finish = (Std.parseFloat(epat.matched(3)) + Std.parseFloat(epat.matched(4))/1e9)*1e3;
 
-		var duration = finish - start;
-		show(no, cmd, exit, start, finish, duration, output.length);
+		var duration = {
+			if (inCompatMode) {
+				null;
+			} else {
+				var start = (Std.parseFloat(bpat.matched(5)) + Std.parseFloat(bpat.matched(6))/1e9)*1e3;
+				var finish = (Std.parseFloat(epat.matched(4)) + Std.parseFloat(epat.matched(5))/1e9)*1e3;
+				finish - start;
+			}
+		};
+
+		show(no, cmd, exit, duration, output.length);
 
 		return {
 			cmd : cmd,

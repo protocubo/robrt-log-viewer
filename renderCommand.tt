@@ -1,7 +1,7 @@
 <div class="cmd-container">
 	<div class="cmd">
 		<pre><code><span class="line-number">(:opts.lineNumber:)</span>$ (:cmd.cmd:)</code></pre>
-		<span class="duration">(:Math.round(cmd.duration*1e3)/1e3:)</span>
+		(:if cmd.duration!=null:)<span class="duration">(:Math.round(cmd.duration*1e3)/1e3:)</span>(:end:)
 		<span class="exit-code (:if cmd.exit != "0":)alert(:end:)">(:cmd.exit:)</span>
 	</div>
 	<div class="output (:if cmd.exit != "0":)expand(:end:) (:if cmd.output.length == 0:)mepty(:end:)">

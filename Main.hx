@@ -80,18 +80,22 @@ class Main {
 		}
 		show(rawLogUrl);
 
-		var raw = haxe.Http.requestUrl(rawLogUrl);  // TODO make this async
-		show(raw.length);
+		var req = new haxe.Http(rawLogUrl);
+		req.onData = function (raw) {
+			show(raw.length);
 
-		var log = parseLog(raw);
-		var container = J("#log-container");
-		var opts = {
-			lineNumber : 1
+			var log = parseLog(raw);
+			var container = J("#log-container");
+			var opts = {
+				lineNumber : 1
+			};
+			for (cmd in log) {
+				var obj = renderCommand(cmd, opts);
+				container.append(JQuery.parseHTML(obj));
+			}
 		};
-		for (cmd in log) {
-			var obj = renderCommand(cmd, opts);
-			container.append(JQuery.parseHTML(obj));
-		}
+		req.onError = function (err) assert(false, err);
+		req.request(false);
 	}
 
 	static function main()

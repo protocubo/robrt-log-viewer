@@ -221,19 +221,28 @@ Main.render = function() {
 	if(Assertion.enableShow) {
 		haxe_Log.trace("rawLogUrl=" + rawLogUrl,{ fileName : "Main.hx", lineNumber : 81, className : "Main", methodName : "render"});
 	}
-	var raw = haxe_Http.requestUrl(rawLogUrl);
-	if(Assertion.enableShow) {
-		haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 84, className : "Main", methodName : "render"});
-	}
-	var log = Main.parseLog(raw);
-	var container = $("#log-container");
-	var opts = { lineNumber : 1};
-	var _g = 0;
-	while(_g < log.length) {
-		var cmd = log[_g];
-		++_g;
-		container.append($.parseHTML(tink_template__$Html_Html_$Impl_$.toString(Main.renderCommand(cmd,opts))));
-	}
+	var req = new haxe_Http(rawLogUrl);
+	req.onData = function(raw) {
+		if(Assertion.enableShow) {
+			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 85, className : "Main", methodName : "render"});
+		}
+		var log = Main.parseLog(raw);
+		var container = $("#log-container");
+		var opts = { lineNumber : 1};
+		var _g = 0;
+		while(_g < log.length) {
+			var cmd = log[_g];
+			++_g;
+			container.append($.parseHTML(tink_template__$Html_Html_$Impl_$.toString(Main.renderCommand(cmd,opts))));
+		}
+	};
+	req.onError = function(err) {
+		if(Assertion.enableAssert) {
+			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 97, className : "Main", methodName : "render"});
+			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
+		}
+	};
+	req.request(false);
 };
 Main.main = function() {
 	$(this).ready(Main.render);
@@ -261,19 +270,6 @@ var haxe_Http = function(url) {
 	this.withCredentials = false;
 };
 haxe_Http.__name__ = true;
-haxe_Http.requestUrl = function(url) {
-	var h = new haxe_Http(url);
-	h.async = false;
-	var r = null;
-	h.onData = function(d) {
-		r = d;
-	};
-	h.onError = function(e) {
-		throw new js__$Boot_HaxeError(e);
-	};
-	h.request(false);
-	return r;
-};
 haxe_Http.prototype = {
 	request: function(post) {
 		var me = this;

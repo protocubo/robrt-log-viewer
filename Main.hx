@@ -16,7 +16,11 @@ class Main {
 			prefix = fst;
 			fst = lines.shift();
 		}
-		assert(bpat.match(fst), fst);
+		while (fst != null && !bpat.match(fst)) {
+			weakAssert(false, fst);
+			fst = lines.shift();
+		}
+		assert(fst != null && bpat.match(fst), prefix, fst);
 
 		var inCompatMode = bpat.matched(3) == null;
 		assert((inCompatMode && prefix != null) || !inCompatMode, bpat.matched(3), inCompatMode, prefix, "the command must either come from header or from the prefix");

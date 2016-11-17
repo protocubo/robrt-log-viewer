@@ -60,8 +60,11 @@ var Lambda = function() { };
 Lambda.__name__ = true;
 Lambda.exists = function(it,f) {
 	var x = it.iterator();
-	while(x.hasNext()) if(f(x.next())) {
-		return true;
+	while(x.hasNext()) {
+		var x1 = x.next();
+		if(f(x1)) {
+			return true;
+		}
 	}
 	return false;
 };
@@ -154,7 +157,8 @@ Main.parseCommand = function(lines) {
 		duration = null;
 	} else {
 		var start = (parseFloat(bpat.matched(5)) + parseFloat(bpat.matched(6)) / 1e9) * 1e3;
-		duration = (parseFloat(epat.matched(4)) + parseFloat(epat.matched(5)) / 1e9) * 1e3 - start;
+		var finish = (parseFloat(epat.matched(4)) + parseFloat(epat.matched(5)) / 1e9) * 1e3;
+		duration = finish - start;
 	}
 	if(Assertion.enableShow) {
 		haxe_Log.trace("no=" + no,{ fileName : "Main.hx", lineNumber : 53, className : "Main", methodName : "parseCommand"});
@@ -176,6 +180,7 @@ Main.parseLog = function(raw) {
 };
 Main.renderCommand = function(cmd,opts) {
 	var ret = tink_template__$Html_Html_$Impl_$.buffer();
+	ret.push("<!-- POSITION: {\"file\":\".///renderCommand.tt\",\"max\":0,\"min\":0} -->");
 	ret.push("<div class=\"cmd-container\">\n\t<div class=\"cmd\">\n\t\t<pre><code><span class=\"line-number\">");
 	ret.push(tink_template__$Html_Html_$Impl_$.of(opts.lineNumber++));
 	ret.push("</span>$ ");
@@ -237,7 +242,8 @@ Main.render = function() {
 		while(_g < log.length) {
 			var cmd = log[_g];
 			++_g;
-			container.append($.parseHTML(tink_template__$Html_Html_$Impl_$.toString(Main.renderCommand(cmd,opts))));
+			var obj = Main.renderCommand(cmd,opts);
+			container.append($.parseHTML(tink_template__$Html_Html_$Impl_$.toString(obj)));
 		}
 	};
 	req.onError = function(err) {
@@ -248,8 +254,21 @@ Main.render = function() {
 	};
 	req.request(false);
 };
+Main.setExpansionActions = function() {
+	var container = $("#log-container");
+	container.click(function(e) {
+		var target = $(e.target);
+		if(!target.hasClass("cmd")) {
+			return;
+		}
+		target.toggleClass("expanded");
+		e.preventDefault();
+		e.stopPropagation();
+	});
+};
 Main.main = function() {
 	$(this).ready(Main.render);
+	$(this).ready(Main.setExpansionActions);
 };
 Math.__name__ = true;
 var Std = function() { };
@@ -454,9 +473,12 @@ haxe_io_Bytes.prototype = {
 			} else if(c < 224) {
 				s += fcc((c & 63) << 6 | b[i++] & 127);
 			} else if(c < 240) {
-				s += fcc((c & 31) << 12 | (b[i++] & 127) << 6 | b[i++] & 127);
+				var c2 = b[i++];
+				s += fcc((c & 31) << 12 | (c2 & 127) << 6 | b[i++] & 127);
 			} else {
-				var u = (c & 15) << 18 | (b[i++] & 127) << 12 | (b[i++] & 127) << 6 | b[i++] & 127;
+				var c21 = b[i++];
+				var c3 = b[i++];
+				var u = (c & 15) << 18 | (c21 & 127) << 12 | (c3 & 127) << 6 | b[i++] & 127;
 				s += fcc((u >> 10) + 55232);
 				s += fcc(u & 1023 | 56320);
 			}
@@ -494,12 +516,15 @@ haxe_crypto_BaseCode.prototype = {
 	initTable: function() {
 		var tbl = [];
 		var _g = 0;
-		while(_g < 256) tbl[_g++] = -1;
+		while(_g < 256) {
+			var i = _g++;
+			tbl[i] = -1;
+		}
 		var _g1 = 0;
 		var _g2 = this.base.length;
 		while(_g1 < _g2) {
-			var i = _g1++;
-			tbl[this.base.b[i]] = i;
+			var i1 = _g1++;
+			tbl[this.base.b[i1]] = i1;
 		}
 		this.tbl = tbl;
 	}
@@ -705,8 +730,9 @@ js_Boot.__interfLoop = function(cc,cl) {
 		var _g1 = 0;
 		var _g = intf.length;
 		while(_g1 < _g) {
-			var i = intf[_g1++];
-			if(i == cl || js_Boot.__interfLoop(i,cl)) {
+			var i = _g1++;
+			var i1 = intf[i];
+			if(i1 == cl || js_Boot.__interfLoop(i1,cl)) {
 				return true;
 			}
 		}
@@ -799,7 +825,10 @@ var js_html_compat_ArrayBuffer = function(a) {
 		this.a = [];
 		var _g1 = 0;
 		var _g = len;
-		while(_g1 < _g) this.a[_g1++] = 0;
+		while(_g1 < _g) {
+			var i = _g1++;
+			this.a[i] = 0;
+		}
 		this.byteLength = len;
 	}
 };
@@ -807,7 +836,8 @@ js_html_compat_ArrayBuffer.__name__ = true;
 js_html_compat_ArrayBuffer.sliceImpl = function(begin,end) {
 	var u = new Uint8Array(this,begin,end == null?null:end - begin);
 	var result = new ArrayBuffer(u.byteLength);
-	new Uint8Array(result).set(u);
+	var resultArray = new Uint8Array(result);
+	resultArray.set(u);
 	return result;
 };
 js_html_compat_ArrayBuffer.prototype = {
@@ -909,29 +939,33 @@ tink_template__$Html_Html_$Impl_$.escape = function(s) {
 	var pos = 0;
 	var max = s.length;
 	var ret = "";
-	while(pos < max) switch(s.charAt(pos++)) {
-	case "\"":
-		var start1 = start;
-		start = pos;
-		ret += s.substring(start1,start - 1) + "&quot;";
-		break;
-	case "&":
-		var start2 = start;
-		start = pos;
-		ret += s.substring(start2,start - 1) + "&amp;";
-		break;
-	case "<":
-		var start3 = start;
-		start = pos;
-		ret += s.substring(start3,start - 1) + "&lt;";
-		break;
-	case ">":
-		var start4 = start;
-		start = pos;
-		ret += s.substring(start4,start - 1) + "&gt;";
-		break;
+	while(pos < max) {
+		var _g = s.charAt(pos++);
+		switch(_g) {
+		case "\"":
+			var start1 = start;
+			start = pos;
+			ret += s.substring(start1,start - 1) + "&quot;";
+			break;
+		case "&":
+			var start2 = start;
+			start = pos;
+			ret += s.substring(start2,start - 1) + "&amp;";
+			break;
+		case "<":
+			var start3 = start;
+			start = pos;
+			ret += s.substring(start3,start - 1) + "&lt;";
+			break;
+		case ">":
+			var start4 = start;
+			start = pos;
+			ret += s.substring(start4,start - 1) + "&gt;";
+			break;
+		}
 	}
-	return ret += HxOverrides.substr(s,start,null);
+	var this1 = ret += HxOverrides.substr(s,start,null);
+	return this1;
 };
 tink_template__$Html_Html_$Impl_$.toString = function(this1) {
 	return this1;
@@ -943,12 +977,14 @@ tink_template__$Html_Html_$Impl_$.of = function(a) {
 	return tink_template__$Html_Html_$Impl_$.escape(Std.string(a));
 };
 tink_template__$Html_Html_$Impl_$.buffer = function() {
-	return [];
+	var this1 = [];
+	return this1;
 };
 var tink_template__$Html_HtmlBuffer_$Impl_$ = {};
 tink_template__$Html_HtmlBuffer_$Impl_$.__name__ = true;
 tink_template__$Html_HtmlBuffer_$Impl_$._new = function() {
-	return [];
+	var this1 = [];
+	return this1;
 };
 tink_template__$Html_HtmlBuffer_$Impl_$.collapse = function(this1) {
 	return tink_template__$Html_Html_$Impl_$.ofMultiple(this1);
@@ -986,3 +1022,5 @@ js_Boot.__toStr = ({ }).toString;
 js_html_compat_Uint8Array.BYTES_PER_ELEMENT = 1;
 Main.main();
 })(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
+
+//# sourceMappingURL=robrt_log_viewer.js.map

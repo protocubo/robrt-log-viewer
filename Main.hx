@@ -100,9 +100,23 @@ class Main {
 		req.request(false);
 	}
 
+	static function setExpansionActions()
+	{
+		var container = J("#log-container");
+		container.click(function (e:Event) {
+			var target = J(e.target);
+			if (!target.hasClass("cmd"))
+				return;
+			target.toggleClass("expanded");
+			e.preventDefault();
+			e.stopPropagation();
+		});
+	}
+
 	static function main()
 	{
 		JTHIS.ready(render);
+		JTHIS.ready(setExpansionActions);
 	}
 }
 

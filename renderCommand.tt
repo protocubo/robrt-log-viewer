@@ -3,7 +3,6 @@
 		<pre><code><span class="line-number">(:opts.lineNumber++:)</span>$ (:cmd.cmd:)<span class="exit-code (:if cmd.exit != "0":)alert(:end:)">(:cmd.exit:)</span>(:if cmd.duration != null:)<span class="duration">(:Math.round(cmd.duration)/1e3:)s</span>(:end:)</code></pre>
 	</div>
 	<div class="output">
-	(:* (:for li in cmd.output:) *:)
 	(:for li in ansiExecute(cmd.output):)
 		<pre><code><span class="line-number">(:opts.lineNumber++:)</span>(:li:)</code></pre>
 	(:end:)

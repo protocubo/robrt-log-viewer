@@ -1,8 +1,6 @@
 <div class="cmd-container">
 	<div class="cmd">
-		<pre><code><span class="line-number">(:opts.lineNumber:)</span>$ (:cmd.cmd:)</code></pre>
-		<span class="duration">(:Math.round(cmd.duration*1e3)/1e3:)</span>
-		<span class="exit-code (:if cmd.exit != "0":)alert(:end:)">(:cmd.exit:)</span>
+		<pre><code><span class="line-number">(:opts.lineNumber:)</span>$ (:cmd.cmd:)<span class="exit-code (:if cmd.exit != "0":)alert(:end:)">(:cmd.exit:)</span><span class="duration">(:Math.round(cmd.duration*1e3)/1e3:)</span></code></pre>
 	</div>
 	<div class="output (:if cmd.exit != "0":)expand(:end:) (:if cmd.output.length == 0:)mepty(:end:)">
 	(:for li in cmd.output:)
@@ -10,4 +8,3 @@
 	(:end:)
 	</div>
 </div>
-

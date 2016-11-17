@@ -201,8 +201,7 @@ Main.render = function() {
 		haxe_Log.trace("[assert] arg=" + arg,{ fileName : "Main.hx", lineNumber : 65, className : "Main", methodName : "render"});
 		throw new js__$Boot_HaxeError("Assertion failed: " + "pat.match(arg)");
 	}
-	var s = pat.matched(1);
-	var rawLogUrl = decodeURIComponent(s.split("+").join(" "));
+	var rawLogUrl = pat.matched(1);
 	if(Assertion.enableShow) {
 		haxe_Log.trace("rawLogUrl=" + rawLogUrl,{ fileName : "Main.hx", lineNumber : 68, className : "Main", methodName : "render"});
 	}

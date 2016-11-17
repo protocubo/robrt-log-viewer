@@ -63,7 +63,7 @@ class Main {
 			var arg = window.location.search;
 			var pat = ~/^\?(.+)$/;
 			assert(pat.match(arg), arg);
-			StringTools.urlDecode(pat.matched(1));
+			pat.matched(1);
 		}
 		show(rawLogUrl);
 

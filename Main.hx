@@ -64,6 +64,23 @@ class Main {
 		}
 	}
 
+	static function ansiExecute(output:Array<String>):Array<tink.template.Html>
+	{
+		var pseudo = output.join("\n");
+		var segs = AnsiParse.run(pseudo);
+		var spans = segs.map(function (i) {
+			var classes = [];
+			if (i.bold) classes.push("ansi-bold");
+			if (i.italic) classes.push("ansi-italic");
+			if (i.underline) classes.push("ansi-underline");
+			if (i.foreground != null) classes.push("ansi-fg-"+i.foreground);
+			if (i.background != null) classes.push("ansi-bg-"+i.background);
+			return '<span class="${classes.join(" ")}">${StringTools.htmlEscape(i.text)}</span>';
+		});
+		show(spans[spans.length - 1]);
+		return spans.join("").split("\n").map(function (i) return new tink.template.Html(i));
+	}
+
 	static function parseLog(raw:String)
 	{
 		var lines = ~/\r?\n/g.split(raw);

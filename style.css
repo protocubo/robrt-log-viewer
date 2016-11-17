@@ -65,3 +65,58 @@ pre:hover {
 .alert {
   background-color: #C33;
 }
+.ansi-bold {
+  font-weight: 700
+}
+.ansi-fg-black {
+  color: #4E4E4E
+}
+.ansi-fg-red {
+  color: #FF6C60
+}
+.ansi-fg-green {
+  color: #0A0
+}
+.ansi-fg-yellow {
+  color: #FFFFB6
+}
+.ansi-fg-blue {
+  color: #96CBFE
+}
+.ansi-fg-magenta {
+  color: #FF73FD
+}
+.ansi-fg-cyan {
+  color: #5FF
+}
+.ansi-fg-white {
+  color: #EEE
+}
+.ansi-fg-grey {
+  color: #969696
+}
+.ansi-bg-black {
+  background-color: #4E4E4E
+}
+.ansi-bg-red {
+  background-color: #FF6C60
+}
+.ansi-bg-green {
+  background-color: #0A0
+}
+.ansi-bg-yellow {
+  background-color: #FFFFB6
+}
+.ansi-bg-blue {
+  background-color: #96CBFE
+}
+.ansi-bg-magenta {
+  background-color: #FF73FD
+}
+.ansi-bg-cyan {
+  background-color: #0AA
+}
+.ansi-bg-white {
+  background-color: #EEE
+}
+

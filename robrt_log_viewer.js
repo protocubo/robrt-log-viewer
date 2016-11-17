@@ -173,12 +173,39 @@ Main.parseCommand = function(lines) {
 	}
 	return { cmd : cmd, exit : exit, duration : duration, output : output};
 };
+Main.ansiExecute = function(output) {
+	var spans = ansiparse(output.join("\n")).map(function(i) {
+		var classes = [];
+		if(i.bold) {
+			classes.push("ansi-bold");
+		}
+		if(i.italic) {
+			classes.push("ansi-italic");
+		}
+		if(i.underline) {
+			classes.push("ansi-underline");
+		}
+		if(i.foreground != null) {
+			classes.push("ansi-fg-" + i.foreground);
+		}
+		if(i.background != null) {
+			classes.push("ansi-bg-" + i.background);
+		}
+		return "<span class=\"" + classes.join(" ") + "\">" + StringTools.htmlEscape(i.text) + "</span>";
+	});
+	if(Assertion.enableShow) {
+		haxe_Log.trace("spans[spans.length - 1]=" + spans[spans.length - 1],{ fileName : "Main.hx", lineNumber : 80, className : "Main", methodName : "ansiExecute"});
+	}
+	return spans.join("").split("\n").map(function(i1) {
+		return i1;
+	});
+};
 Main.parseLog = function(raw) {
 	var lines = new EReg("\r?\n","g").split(raw);
 	var cmds = [];
 	while(lines.length > 0 && lines[0] != "") cmds.push(Main.parseCommand(lines));
 	if(Assertion.enableShow) {
-		haxe_Log.trace("cmds.length=" + cmds.length,{ fileName : "Main.hx", lineNumber : 73, className : "Main", methodName : "parseLog"});
+		haxe_Log.trace("cmds.length=" + cmds.length,{ fileName : "Main.hx", lineNumber : 90, className : "Main", methodName : "parseLog"});
 	}
 	return cmds;
 };
@@ -210,14 +237,14 @@ Main.renderCommand = function(cmd,opts) {
 	}
 	ret.push("</code></pre>\n\t</div>\n\t<div class=\"output\">\n\t");
 	var _g = 0;
-	var _g1 = cmd.output;
+	var _g1 = Main.ansiExecute(cmd.output);
 	while(_g < _g1.length) {
 		var li = _g1[_g];
 		++_g;
 		ret.push("\n\t\t<pre><code><span class=\"line-number\">");
 		ret.push(tink_template__$Html_Html_$Impl_$.of(opts.lineNumber++));
 		ret.push("</span>");
-		ret.push(tink_template__$Html_Html_$Impl_$.escape(li));
+		ret.push(li);
 		ret.push("</code></pre>\n\t");
 	}
 	ret.push("\n\t</div>\n</div>\n");
@@ -227,17 +254,17 @@ Main.render = function() {
 	var arg = window.location.search;
 	var pat = new EReg("^\\?(.+)$","");
 	if(Assertion.enableAssert && !pat.match(arg)) {
-		haxe_Log.trace("[assert] arg=" + arg,{ fileName : "Main.hx", lineNumber : 84, className : "Main", methodName : "render"});
+		haxe_Log.trace("[assert] arg=" + arg,{ fileName : "Main.hx", lineNumber : 101, className : "Main", methodName : "render"});
 		throw new js__$Boot_HaxeError("Assertion failed: " + "pat.match(arg)");
 	}
 	var rawLogUrl = pat.matched(1);
 	if(Assertion.enableShow) {
-		haxe_Log.trace("rawLogUrl=" + rawLogUrl,{ fileName : "Main.hx", lineNumber : 87, className : "Main", methodName : "render"});
+		haxe_Log.trace("rawLogUrl=" + rawLogUrl,{ fileName : "Main.hx", lineNumber : 104, className : "Main", methodName : "render"});
 	}
 	var req = new haxe_Http(rawLogUrl);
 	req.onData = function(raw) {
 		if(Assertion.enableShow) {
-			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 91, className : "Main", methodName : "render"});
+			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 108, className : "Main", methodName : "render"});
 		}
 		var log = Main.parseLog(raw);
 		var container = $("#log-container");
@@ -251,7 +278,7 @@ Main.render = function() {
 	};
 	req.onError = function(err) {
 		if(Assertion.enableAssert) {
-			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 103, className : "Main", methodName : "render"});
+			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 120, className : "Main", methodName : "render"});
 			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
 		}
 	};
@@ -280,6 +307,14 @@ Std.string = function(s) {
 };
 var StringTools = function() { };
 StringTools.__name__ = true;
+StringTools.htmlEscape = function(s,quotes) {
+	s = s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
+	if(quotes) {
+		return s.split("\"").join("&quot;").split("'").join("&#039;");
+	} else {
+		return s;
+	}
+};
 StringTools.startsWith = function(s,start) {
 	if(s.length >= start.length) {
 		return HxOverrides.substr(s,0,start.length) == start;

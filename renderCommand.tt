@@ -1,13 +1,10 @@
-<div class="cmd-container">
+<div class="cmd-container (:if cmd.output.length > 0:)allow-expansion(:end:) (:if cmd.exit != "0":)expanded(:end:)">
 	<div class="cmd">
-		<pre><code><span class="line-number">(:opts.lineNumber++:)</span>$ (:cmd.cmd:)</code></pre>
-		(:if cmd.duration!=null:)<span class="duration">(:Math.round(cmd.duration*1e3)/1e3:)</span>(:end:)
-		<span class="exit-code (:if cmd.exit != "0":)alert(:end:)">(:cmd.exit:)</span>
+		<pre><code><span class="line-number">(:opts.lineNumber++:)</span>$ (:cmd.cmd:)<span class="exit-code (:if cmd.exit != "0":)alert(:end:)">(:cmd.exit:)</span>(:if cmd.duration != null:)<span class="duration">(:Math.round(cmd.duration)/1e3:)s</span>(:end:)</code></pre>
 	</div>
-	<div class="output (:if cmd.exit != "0":)expanded(:end:) (:if cmd.output.length == 0:)empty(:end:)">
+	<div class="output">
 	(:for li in cmd.output:)
 		<pre><code><span class="line-number">(:opts.lineNumber++:)</span>(:li:)</code></pre>
 	(:end:)
 	</div>
 </div>
-

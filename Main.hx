@@ -104,8 +104,8 @@ class Main {
 	{
 		var container = J("#log-container");
 		container.click(function (e:Event) {
-			var target = J(e.target);
-			if (!target.hasClass("cmd"))
+			var target = J(e.target).parents(".cmd-container");
+			if (!target.hasClass("allow-expansion"))
 				return;
 			target.toggleClass("expanded");
 			e.preventDefault();

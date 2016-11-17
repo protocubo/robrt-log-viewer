@@ -177,7 +177,7 @@ Main.parseLog = function(raw) {
 Main.renderCommand = function(cmd,opts) {
 	var ret = tink_template__$Html_Html_$Impl_$.buffer();
 	ret.push("<div class=\"cmd-container\">\n\t<div class=\"cmd\">\n\t\t<pre><code><span class=\"line-number\">");
-	ret.push(tink_template__$Html_Html_$Impl_$.of(opts.lineNumber));
+	ret.push(tink_template__$Html_Html_$Impl_$.of(opts.lineNumber++));
 	ret.push("</span>$ ");
 	ret.push(tink_template__$Html_Html_$Impl_$.escape(cmd.cmd));
 	ret.push("</code></pre>\n\t\t");

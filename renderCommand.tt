@@ -1,6 +1,6 @@
 <div class="cmd-container">
 	<div class="cmd">
-		<pre><code><span class="line-number">(:opts.lineNumber:)</span>$ (:cmd.cmd:)</code></pre>
+		<pre><code><span class="line-number">(:opts.lineNumber++:)</span>$ (:cmd.cmd:)</code></pre>
 		(:if cmd.duration!=null:)<span class="duration">(:Math.round(cmd.duration*1e3)/1e3:)</span>(:end:)
 		<span class="exit-code (:if cmd.exit != "0":)alert(:end:)">(:cmd.exit:)</span>
 	</div>

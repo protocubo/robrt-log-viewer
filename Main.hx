@@ -28,8 +28,10 @@ class Main {
 		while ({ assert(lines.length > 0, lines.length); !epat.match(lines[0]); }) {
 			var cur = lines.shift();
 			var cr = cur.lastIndexOf("\r");
-			if (cr > 0)
-				cur = cur.substr(cr);
+			if (cr > 0) {
+				weakAssert(cr + 1 < cur.length, "cur.substr might fail; it's behavior when pos >= this.length is not specified");
+				cur = cur.substr(cr + 1);
+			}
 			output.push(cur);
 		}
 		assert(lines.length >= 1, lines.length);

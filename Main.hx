@@ -54,8 +54,6 @@ class Main {
 			}
 		};
 
-		show(no, cmd, exit, duration, output.length);
-
 		return {
 			cmd : cmd,
 			exit : exit,
@@ -77,7 +75,8 @@ class Main {
 			if (i.background != null) classes.push("ansi-bg-"+i.background);
 			return '<span class="${classes.join(" ")}">${StringTools.htmlEscape(i.text)}</span>';
 		});
-		show(spans[spans.length - 1]);
+		if (spans.length == 0)
+			return [];
 		return spans.join("").split("\n").map(function (i) return new tink.template.Html(i));
 	}
 
@@ -87,7 +86,6 @@ class Main {
 		var cmds = [];
 		while (lines.length > 0 && lines[0] != "")
 			cmds.push(parseCommand(lines));
-		show(cmds.length);
 		return cmds;
 	}
 
@@ -101,7 +99,6 @@ class Main {
 			assert(pat.match(arg), arg);
 			pat.matched(1);
 		}
-		show(rawLogUrl);
 
 		var req = new haxe.Http(rawLogUrl);
 		req.onData = function (raw) {

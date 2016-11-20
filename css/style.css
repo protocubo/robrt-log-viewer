@@ -119,4 +119,8 @@ pre:hover {
 .ansi-bg-white {
   background-color: #EEE
 }
+#utest-results {
+  background-color: #fff;
+  color: #333;
+}
 

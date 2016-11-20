@@ -64,7 +64,7 @@ class Main {
 		}
 	}
 
-	static function parseLog(raw:String)
+	public static function parseLog(raw:String)
 	{
 		var lines = ~/\r?\n/g.split(raw);
 		var cmds = [];
@@ -73,7 +73,7 @@ class Main {
 		return cmds;
 	}
 
-	static function ansiExecute(output:Array<String>):Array<tink.template.Html>
+	public static function ansiExecute(output:Array<String>):Array<tink.template.Html>
 	{
 		var pseudo = output.join("\n");
 		var segs = AnsiParse.run(pseudo);
@@ -105,7 +105,7 @@ class Main {
 		});
 	}
 
-	static function render(url:String, ?container:JQuery)
+	public static function render(url:String, ?container:JQuery)
 	{
 		var req = new haxe.Http(url);
 		req.onData = function (raw) {
@@ -132,7 +132,12 @@ class Main {
 		case "":
 			assert(false, "nothing to do");
 		case pat if (pat.length > 3 && "?unit-tests".startsWith(pat)):
-			assert(false, "TODO");
+			JTHIS.ready(function () {
+				var runner = new utest.Runner();
+				runner.addCase(new Test());
+				utest.ui.Report.create(runner);
+				runner.run();
+			});
 		case _.substr(1) => url:
 			JTHIS.ready(function () {
 				var container = J("#log-container");

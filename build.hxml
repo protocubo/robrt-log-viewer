@@ -2,5 +2,7 @@
 -main Main
 -lib assertion
 -lib tink_template
+-lib utest
 -cp src
+-dce full
 

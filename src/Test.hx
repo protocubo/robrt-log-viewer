@@ -60,13 +60,15 @@ class Test {
 				"bar",
 				finished(11, -99, "9.900000000")].join("\n")));
 		// dealing with carriage returns
-		A.same([result("cmd", -99, ["bar", "ar", "r", "bar"], 8800)],
+		A.same([result("cmd", -99, ["", "bar", "ar", "r", "bar", ""], 8800)],
 			parseLog([
 				started(11, "cmd", "1.100000000"),
+				"",
 				"\rbar",
 				"b\rar",
 				"ba\rr",
 				"bar\r",  // the \r merges with the \n from the neccessary "finished" line
+				"\r",
 				finished(11, -99, "9.900000000")].join("\n")));
 		// more than one command
 		A.same([result("cmd", 99, ["bar"], 8800), result("dmc", 77, ["foo"], 6600)],

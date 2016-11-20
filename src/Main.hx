@@ -34,7 +34,7 @@ class Main {
 		while ({ assert(lines.length > 0, lines.length); !epat.match(lines[0]); }) {
 			var cur = lines.shift();
 			var cr = cur.lastIndexOf("\r");
-			assert(cr + 1 < cur.length, "ending \r should not happen, since there's always a 'finished' line and \r\n is a newline");
+			assert(cur.length == 0 || cr + 1 < cur.length, "ending \r should not happen, since there's always a 'finished' line and \r\n is a newline", cur, cr);
 			cur = cur.substr(cr + 1);
 			output.push(cur);
 		}

@@ -571,7 +571,8 @@ Test.prototype = {
 		utest_Assert.same([result("cmd",99,["bar"])],Main.parseLog([echo("cmd"),started(11,true),"bar",finished(11,99)].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 50, className : "Test", methodName : "test_parsing"});
 		utest_Assert.same([result("cmd",-99,["bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,-99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 57, className : "Test", methodName : "test_parsing"});
 		utest_Assert.same([result("cmd",-99,["bar","ar","r","bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"\rbar","b\rar","ba\rr","bar\r",finished(11,-99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 63, className : "Test", methodName : "test_parsing"});
-		utest_Assert.warn("TODO tests with garbage due to out of order output before 'started'");
+		utest_Assert.same([result("cmd",99,["bar"],8800),result("dmc",77,["foo"],6600)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000"),started(9,null,"dmc","10.100000000"),"foo",finished(9,77,"16.700000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 72, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",99,["bar"],8800),result("dmc",77,["foo"],6600)],Main.parseLog([echo("cmd"),started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000"),echo("dmc"),"ops",started(9,null,"dmc","10.100000000"),"foo",finished(9,77,"16.700000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 81, className : "Test", methodName : "test_parsing"});
 	}
 	,test_ansi_executing: function() {
 		utest_Assert.warn("TODO");

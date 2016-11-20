@@ -68,7 +68,27 @@ class Test {
 				"ba\rr",
 				"bar\r",  // the \r merges with the \n from the neccessary "finished" line
 				finished(11, -99, "9.900000000")].join("\n")));
-		A.warn("TODO tests with garbage due to out of order output before 'started'");
+		// more than one command
+		A.same([result("cmd", 99, ["bar"], 8800), result("dmc", 77, ["foo"], 6600)],
+			parseLog([
+				started(11, "cmd", "1.100000000"),
+				"bar",
+				finished(11, 99, "9.900000000"),
+				started(9, "dmc", "10.100000000"),
+				"foo",
+				finished(9, 77, "16.700000000")].join("\n")));
+		// handle some garbage due to out-of-order output after the "echo" (less than ideal behavior!)
+		A.same([result("cmd", 99, ["bar"], 8800), result("dmc", 77, ["foo"], 6600)],
+			parseLog([
+				echo("cmd"),
+				started(11, "cmd", "1.100000000"),
+				"bar",
+				finished(11, 99, "9.900000000"),
+				echo("dmc"),
+				"ops",
+				started(9, "dmc", "10.100000000"),
+				"foo",
+				finished(9, 77, "16.700000000")].join("\n")));
 	}
 
 	function test_ansi_executing()

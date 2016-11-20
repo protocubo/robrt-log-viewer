@@ -231,17 +231,15 @@ Main.parseCommand = function(lines) {
 		}
 		var cur = lines.shift();
 		var cr = cur.lastIndexOf("\r");
-		if(cr > 0) {
-			if(Assertion.enableAssert && Assertion.enableWeakAssert && cr + 1 >= cur.length) {
-				haxe_Log.trace("[weak assert] " + "cur.substr might fail; it's behavior when pos >= this.length is not specified",{ fileName : "Main.hx", lineNumber : 38, className : "Main", methodName : "parseCommand"});
-				haxe_Log.trace("[weak assert] would have FAILED: " + "cr + 1 < cur.length",{ fileName : "Main.hx", lineNumber : 38, className : "Main", methodName : "parseCommand"});
-			}
-			cur = HxOverrides.substr(cur,cr + 1,null);
+		if(Assertion.enableAssert && cr + 1 >= cur.length) {
+			haxe_Log.trace("[assert] " + "ending \r should not happen, since there's always a 'finished' line and \r\n is a newline",{ fileName : "Main.hx", lineNumber : 37, className : "Main", methodName : "parseCommand"});
+			throw new js__$Boot_HaxeError("Assertion failed: " + "cr + 1 < cur.length");
 		}
+		cur = HxOverrides.substr(cur,cr + 1,null);
 		output.push(cur);
 	}
 	if(Assertion.enableAssert && lines.length < 1) {
-		haxe_Log.trace("[assert] lines.length=" + lines.length,{ fileName : "Main.hx", lineNumber : 43, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("[assert] lines.length=" + lines.length,{ fileName : "Main.hx", lineNumber : 41, className : "Main", methodName : "parseCommand"});
 		throw new js__$Boot_HaxeError("Assertion failed: " + "lines.length >= 1");
 	}
 	lines.shift();
@@ -347,12 +345,12 @@ Main.render = function(url,container) {
 	var req = new haxe_Http(url);
 	req.onData = function(raw) {
 		if(Assertion.enableShow) {
-			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 112, className : "Main", methodName : "render"});
+			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 110, className : "Main", methodName : "render"});
 		}
 		var log = Main.parseLog(raw);
 		var opts = { lineNumber : 1};
 		if(Assertion.enableShow) {
-			haxe_Log.trace("container.length=" + container.length,{ fileName : "Main.hx", lineNumber : 118, className : "Main", methodName : "render"});
+			haxe_Log.trace("container.length=" + container.length,{ fileName : "Main.hx", lineNumber : 116, className : "Main", methodName : "render"});
 		}
 		var _g = 0;
 		while(_g < log.length) {
@@ -364,7 +362,7 @@ Main.render = function(url,container) {
 	};
 	req.onError = function(err) {
 		if(Assertion.enableAssert) {
-			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 124, className : "Main", methodName : "render"});
+			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 122, className : "Main", methodName : "render"});
 			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
 		}
 	};
@@ -376,7 +374,7 @@ Main.main = function() {
 	var _hx_tmp;
 	if(_g == "") {
 		if(Assertion.enableAssert) {
-			haxe_Log.trace("[assert] " + "nothing to do",{ fileName : "Main.hx", lineNumber : 133, className : "Main", methodName : "main"});
+			haxe_Log.trace("[assert] " + "nothing to do",{ fileName : "Main.hx", lineNumber : 131, className : "Main", methodName : "main"});
 			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
 		}
 	} else if(_g.length > 3 && StringTools.startsWith("?unit-tests",_g)) {
@@ -572,8 +570,8 @@ Test.prototype = {
 		utest_Assert.same([result("cmd",99,["bar"],8800)],Main.parseLog([echo("cmd"),started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 43, className : "Test", methodName : "test_parsing"});
 		utest_Assert.same([result("cmd",99,["bar"])],Main.parseLog([echo("cmd"),started(11,true),"bar",finished(11,99)].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 50, className : "Test", methodName : "test_parsing"});
 		utest_Assert.same([result("cmd",-99,["bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,-99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 57, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",-99,["bar","ar","r","bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"\rbar","b\rar","ba\rr","bar\r",finished(11,-99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 63, className : "Test", methodName : "test_parsing"});
 		utest_Assert.warn("TODO tests with garbage due to out of order output before 'started'");
-		utest_Assert.warn("TODO tests with carriage returns");
 	}
 	,test_ansi_executing: function() {
 		utest_Assert.warn("TODO");

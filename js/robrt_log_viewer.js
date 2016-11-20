@@ -166,6 +166,12 @@ Main.parseCommand = function(lines) {
 	}
 	return { cmd : cmd, exit : exit, duration : duration, output : output};
 };
+Main.parseLog = function(raw) {
+	var lines = new EReg("\r?\n","g").split(raw);
+	var cmds = [];
+	while(lines.length > 0 && lines[0] != "") cmds.push(Main.parseCommand(lines));
+	return cmds;
+};
 Main.ansiExecute = function(output) {
 	var spans = ansiparse(output.join("\n")).map(function(i) {
 		var classes = [];
@@ -192,12 +198,6 @@ Main.ansiExecute = function(output) {
 	return spans.join("").split("\n").map(function(i1) {
 		return i1;
 	});
-};
-Main.parseLog = function(raw) {
-	var lines = new EReg("\r?\n","g").split(raw);
-	var cmds = [];
-	while(lines.length > 0 && lines[0] != "") cmds.push(Main.parseCommand(lines));
-	return cmds;
 };
 Main.renderCommand = function(cmd,opts) {
 	var ret = tink_template__$Html_Html_$Impl_$.buffer();
@@ -240,16 +240,27 @@ Main.renderCommand = function(cmd,opts) {
 	ret.push("\n\t</div>\n</div>\n");
 	return tink_template__$Html_HtmlBuffer_$Impl_$.collapse(ret);
 };
+Main.setExpansionActions = function(container) {
+	container.click(function(e) {
+		var target = $(e.target).parents(".cmd-container");
+		if(!target.hasClass("allow-expansion")) {
+			return;
+		}
+		target.toggleClass("expanded");
+		e.preventDefault();
+		e.stopPropagation();
+	});
+};
 Main.render = function(url,container) {
 	var req = new haxe_Http(url);
 	req.onData = function(raw) {
 		if(Assertion.enableShow) {
-			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 100, className : "Main", methodName : "render"});
+			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 112, className : "Main", methodName : "render"});
 		}
 		var log = Main.parseLog(raw);
 		var opts = { lineNumber : 1};
 		if(Assertion.enableShow) {
-			haxe_Log.trace("container.length=" + container.length,{ fileName : "Main.hx", lineNumber : 106, className : "Main", methodName : "render"});
+			haxe_Log.trace("container.length=" + container.length,{ fileName : "Main.hx", lineNumber : 118, className : "Main", methodName : "render"});
 		}
 		var _g = 0;
 		while(_g < log.length) {
@@ -261,23 +272,12 @@ Main.render = function(url,container) {
 	};
 	req.onError = function(err) {
 		if(Assertion.enableAssert) {
-			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 112, className : "Main", methodName : "render"});
+			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 124, className : "Main", methodName : "render"});
 			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
 		}
 	};
 	req.request(false);
 	Main.setExpansionActions(container);
-};
-Main.setExpansionActions = function(container) {
-	container.click(function(e) {
-		var target = $(e.target).parents(".cmd-container");
-		if(!target.hasClass("allow-expansion")) {
-			return;
-		}
-		target.toggleClass("expanded");
-		e.preventDefault();
-		e.stopPropagation();
-	});
 };
 Main.main = function() {
 	var _g = window.location.search;

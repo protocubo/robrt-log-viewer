@@ -64,6 +64,15 @@ class Main {
 		}
 	}
 
+	static function parseLog(raw:String)
+	{
+		var lines = ~/\r?\n/g.split(raw);
+		var cmds = [];
+		while (lines.length > 0 && lines[0] != "")
+			cmds.push(parseCommand(lines));
+		return cmds;
+	}
+
 	static function ansiExecute(output:Array<String>):Array<tink.template.Html>
 	{
 		var pseudo = output.join("\n");
@@ -82,16 +91,19 @@ class Main {
 		return spans.join("").split("\n").map(function (i) return new tink.template.Html(i));
 	}
 
-	static function parseLog(raw:String)
-	{
-		var lines = ~/\r?\n/g.split(raw);
-		var cmds = [];
-		while (lines.length > 0 && lines[0] != "")
-			cmds.push(parseCommand(lines));
-		return cmds;
-	}
-
 	@:template static function renderCommand(cmd:Command, opts:{ lineNumber : Int });
+
+	static function setExpansionActions(container:JQuery)
+	{
+		container.click(function (e:Event) {
+			var target = J(e.target).parents(".cmd-container");
+			if (!target.hasClass("allow-expansion"))
+				return;
+			target.toggleClass("expanded");
+			e.preventDefault();
+			e.stopPropagation();
+		});
+	}
 
 	static function render(url:String, ?container:JQuery)
 	{
@@ -112,18 +124,6 @@ class Main {
 		req.onError = function (err) assert(false, err);
 		req.request(false);
 		setExpansionActions(container);
-	}
-
-	static function setExpansionActions(container:JQuery)
-	{
-		container.click(function (e:Event) {
-			var target = J(e.target).parents(".cmd-container");
-			if (!target.hasClass("allow-expansion"))
-				return;
-			target.toggleClass("expanded");
-			e.preventDefault();
-			e.stopPropagation();
-		});
 	}
 
 	static function main()

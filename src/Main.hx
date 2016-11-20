@@ -4,6 +4,8 @@ import Assertion.*;
 import js.Browser.*;
 import js.jquery.Helper.*;
 
+using StringTools;
+
 class Main {
 	static function parseCommand(lines:Array<String>):Command
 	{
@@ -12,7 +14,7 @@ class Main {
 
 		var prefix = null;
 		var fst = lines.shift();
-		if (StringTools.startsWith(fst, "+ ")) {
+		if (fst.startsWith("+ ")) {
 			prefix = fst;
 			fst = lines.shift();
 		}
@@ -91,24 +93,17 @@ class Main {
 
 	@:template static function renderCommand(cmd:Command, opts:{ lineNumber : Int });
 
-	static function render()
+	static function render(url:String, ?container:JQuery)
 	{
-		var rawLogUrl = {
-			var arg = window.location.search;
-			var pat = ~/^\?(.+)$/;
-			assert(pat.match(arg), arg);
-			pat.matched(1);
-		}
-
-		var req = new haxe.Http(rawLogUrl);
+		var req = new haxe.Http(url);
 		req.onData = function (raw) {
 			show(raw.length);
 
 			var log = parseLog(raw);
-			var container = J("#log-container");
 			var opts = {
 				lineNumber : 1
 			};
+			show(container.length);
 			for (cmd in log) {
 				var obj = renderCommand(cmd, opts);
 				container.append(JQuery.parseHTML(obj));
@@ -116,11 +111,11 @@ class Main {
 		};
 		req.onError = function (err) assert(false, err);
 		req.request(false);
+		setExpansionActions(container);
 	}
 
-	static function setExpansionActions()
+	static function setExpansionActions(container:JQuery)
 	{
-		var container = J("#log-container");
 		container.click(function (e:Event) {
 			var target = J(e.target).parents(".cmd-container");
 			if (!target.hasClass("allow-expansion"))
@@ -133,8 +128,17 @@ class Main {
 
 	static function main()
 	{
-		JTHIS.ready(render);
-		JTHIS.ready(setExpansionActions);
+		switch window.location.search {
+		case "":
+			assert(false, "nothing to do");
+		case pat if (pat.length > 3 && "?unit-tests".startsWith(pat)):
+			assert(false, "TODO");
+		case _.substr(1) => url:
+			JTHIS.ready(function () {
+				var container = J("#log-container");
+				render(url, container);
+			});
+		}
 	}
 }
 

@@ -108,22 +108,22 @@ Main.parseCommand = function(lines) {
 	}
 	while(fst != null && !bpat.match(fst)) {
 		if(Assertion.enableAssert && Assertion.enableWeakAssert) {
-			haxe_Log.trace("[weak assert] fst=" + fst,{ fileName : "Main.hx", lineNumber : 20, className : "Main", methodName : "parseCommand"});
-			haxe_Log.trace("[weak assert] would have FAILED: " + "false",{ fileName : "Main.hx", lineNumber : 20, className : "Main", methodName : "parseCommand"});
+			haxe_Log.trace("[weak assert] fst=" + fst,{ fileName : "Main.hx", lineNumber : 22, className : "Main", methodName : "parseCommand"});
+			haxe_Log.trace("[weak assert] would have FAILED: " + "false",{ fileName : "Main.hx", lineNumber : 22, className : "Main", methodName : "parseCommand"});
 		}
 		fst = lines.shift();
 	}
 	if(Assertion.enableAssert && !(fst != null && bpat.match(fst))) {
-		haxe_Log.trace("[assert] prefix=" + prefix,{ fileName : "Main.hx", lineNumber : 23, className : "Main", methodName : "parseCommand"});
-		haxe_Log.trace("[assert] fst=" + fst,{ fileName : "Main.hx", lineNumber : 23, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("[assert] prefix=" + prefix,{ fileName : "Main.hx", lineNumber : 25, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("[assert] fst=" + fst,{ fileName : "Main.hx", lineNumber : 25, className : "Main", methodName : "parseCommand"});
 		throw new js__$Boot_HaxeError("Assertion failed: " + "fst != null && bpat.match(fst)");
 	}
 	var inCompatMode = bpat.matched(3) == null;
 	if(Assertion.enableAssert && !(inCompatMode && prefix != null || !inCompatMode)) {
-		haxe_Log.trace("[assert] bpat.matched(3)=" + bpat.matched(3),{ fileName : "Main.hx", lineNumber : 26, className : "Main", methodName : "parseCommand"});
-		haxe_Log.trace("[assert] inCompatMode=" + (inCompatMode == null?"null":"" + inCompatMode),{ fileName : "Main.hx", lineNumber : 26, className : "Main", methodName : "parseCommand"});
-		haxe_Log.trace("[assert] prefix=" + prefix,{ fileName : "Main.hx", lineNumber : 26, className : "Main", methodName : "parseCommand"});
-		haxe_Log.trace("[assert] " + "the command must either come from header or from the prefix",{ fileName : "Main.hx", lineNumber : 26, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("[assert] bpat.matched(3)=" + bpat.matched(3),{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("[assert] inCompatMode=" + (inCompatMode == null?"null":"" + inCompatMode),{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("[assert] prefix=" + prefix,{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("[assert] " + "the command must either come from header or from the prefix",{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "parseCommand"});
 		throw new js__$Boot_HaxeError("Assertion failed: " + "(inCompatMode && prefix != null) || !inCompatMode");
 	}
 	var no = bpat.matched(2);
@@ -131,7 +131,7 @@ Main.parseCommand = function(lines) {
 	var output = [];
 	while(true) {
 		if(Assertion.enableAssert && lines.length <= 0) {
-			haxe_Log.trace("[assert] lines.length=" + lines.length,{ fileName : "Main.hx", lineNumber : 32, className : "Main", methodName : "parseCommand"});
+			haxe_Log.trace("[assert] lines.length=" + lines.length,{ fileName : "Main.hx", lineNumber : 34, className : "Main", methodName : "parseCommand"});
 			throw new js__$Boot_HaxeError("Assertion failed: " + "lines.length > 0");
 		}
 		if(!(!epat.match(lines[0]))) {
@@ -141,15 +141,15 @@ Main.parseCommand = function(lines) {
 		var cr = cur.lastIndexOf("\r");
 		if(cr > 0) {
 			if(Assertion.enableAssert && Assertion.enableWeakAssert && cr + 1 >= cur.length) {
-				haxe_Log.trace("[weak assert] " + "cur.substr might fail; it's behavior when pos >= this.length is not specified",{ fileName : "Main.hx", lineNumber : 36, className : "Main", methodName : "parseCommand"});
-				haxe_Log.trace("[weak assert] would have FAILED: " + "cr + 1 < cur.length",{ fileName : "Main.hx", lineNumber : 36, className : "Main", methodName : "parseCommand"});
+				haxe_Log.trace("[weak assert] " + "cur.substr might fail; it's behavior when pos >= this.length is not specified",{ fileName : "Main.hx", lineNumber : 38, className : "Main", methodName : "parseCommand"});
+				haxe_Log.trace("[weak assert] would have FAILED: " + "cr + 1 < cur.length",{ fileName : "Main.hx", lineNumber : 38, className : "Main", methodName : "parseCommand"});
 			}
 			cur = HxOverrides.substr(cur,cr + 1,null);
 		}
 		output.push(cur);
 	}
 	if(Assertion.enableAssert && lines.length < 1) {
-		haxe_Log.trace("[assert] lines.length=" + lines.length,{ fileName : "Main.hx", lineNumber : 41, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("[assert] lines.length=" + lines.length,{ fileName : "Main.hx", lineNumber : 43, className : "Main", methodName : "parseCommand"});
 		throw new js__$Boot_HaxeError("Assertion failed: " + "lines.length >= 1");
 	}
 	lines.shift();
@@ -240,38 +240,36 @@ Main.renderCommand = function(cmd,opts) {
 	ret.push("\n\t</div>\n</div>\n");
 	return tink_template__$Html_HtmlBuffer_$Impl_$.collapse(ret);
 };
-Main.render = function() {
-	var arg = window.location.search;
-	var pat = new EReg("^\\?(.+)$","");
-	if(Assertion.enableAssert && !pat.match(arg)) {
-		haxe_Log.trace("[assert] arg=" + arg,{ fileName : "Main.hx", lineNumber : 99, className : "Main", methodName : "render"});
-		throw new js__$Boot_HaxeError("Assertion failed: " + "pat.match(arg)");
-	}
-	var req = new haxe_Http(pat.matched(1));
+Main.render = function(url,container) {
+	var req = new haxe_Http(url);
 	req.onData = function(raw) {
 		if(Assertion.enableShow) {
-			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 105, className : "Main", methodName : "render"});
+			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 100, className : "Main", methodName : "render"});
 		}
 		var log = Main.parseLog(raw);
-		var container = $("#log-container");
 		var opts = { lineNumber : 1};
+		if(Assertion.enableShow) {
+			haxe_Log.trace("container.length=" + container.length,{ fileName : "Main.hx", lineNumber : 106, className : "Main", methodName : "render"});
+		}
 		var _g = 0;
 		while(_g < log.length) {
 			var cmd = log[_g];
 			++_g;
-			container.append($.parseHTML(tink_template__$Html_Html_$Impl_$.toString(Main.renderCommand(cmd,opts))));
+			var tmp = $.parseHTML(tink_template__$Html_Html_$Impl_$.toString(Main.renderCommand(cmd,opts)));
+			container.append(tmp);
 		}
 	};
 	req.onError = function(err) {
 		if(Assertion.enableAssert) {
-			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 117, className : "Main", methodName : "render"});
+			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 112, className : "Main", methodName : "render"});
 			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
 		}
 	};
 	req.request(false);
+	Main.setExpansionActions(container);
 };
-Main.setExpansionActions = function() {
-	$("#log-container").click(function(e) {
+Main.setExpansionActions = function(container) {
+	container.click(function(e) {
 		var target = $(e.target).parents(".cmd-container");
 		if(!target.hasClass("allow-expansion")) {
 			return;
@@ -282,8 +280,26 @@ Main.setExpansionActions = function() {
 	});
 };
 Main.main = function() {
-	$(this).ready(Main.render);
-	$(this).ready(Main.setExpansionActions);
+	var _g = window.location.search;
+	var _hx_tmp;
+	if(_g == "") {
+		if(Assertion.enableAssert) {
+			haxe_Log.trace("[assert] " + "nothing to do",{ fileName : "Main.hx", lineNumber : 133, className : "Main", methodName : "main"});
+			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
+		}
+	} else if(_g.length > 3 && StringTools.startsWith("?unit-tests",_g)) {
+		if(Assertion.enableAssert) {
+			haxe_Log.trace("[assert] " + "TODO",{ fileName : "Main.hx", lineNumber : 135, className : "Main", methodName : "main"});
+			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
+		}
+	} else {
+		_hx_tmp = HxOverrides.substr(_g,1,null);
+		var url = _hx_tmp;
+		$(this).ready(function() {
+			var container = $("#log-container");
+			Main.render(url,container);
+		});
+	}
 };
 Math.__name__ = true;
 var Std = function() { };
@@ -308,6 +324,30 @@ StringTools.startsWith = function(s,start) {
 		return false;
 	}
 };
+var ValueType = { __ename__ : true, __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] };
+ValueType.TNull = ["TNull",0];
+ValueType.TNull.toString = $estr;
+ValueType.TNull.__enum__ = ValueType;
+ValueType.TInt = ["TInt",1];
+ValueType.TInt.toString = $estr;
+ValueType.TInt.__enum__ = ValueType;
+ValueType.TFloat = ["TFloat",2];
+ValueType.TFloat.toString = $estr;
+ValueType.TFloat.__enum__ = ValueType;
+ValueType.TBool = ["TBool",3];
+ValueType.TBool.toString = $estr;
+ValueType.TBool.__enum__ = ValueType;
+ValueType.TObject = ["TObject",4];
+ValueType.TObject.toString = $estr;
+ValueType.TObject.__enum__ = ValueType;
+ValueType.TFunction = ["TFunction",5];
+ValueType.TFunction.toString = $estr;
+ValueType.TFunction.__enum__ = ValueType;
+ValueType.TClass = function(c) { var $x = ["TClass",6,c]; $x.__enum__ = ValueType; $x.toString = $estr; return $x; };
+ValueType.TEnum = function(e) { var $x = ["TEnum",7,e]; $x.__enum__ = ValueType; $x.toString = $estr; return $x; };
+ValueType.TUnknown = ["TUnknown",8];
+ValueType.TUnknown.toString = $estr;
+ValueType.TUnknown.__enum__ = ValueType;
 var haxe_Http = function(url) {
 	this.url = url;
 	this.headers = new List();

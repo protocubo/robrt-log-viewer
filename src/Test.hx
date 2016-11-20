@@ -2,7 +2,9 @@ import js.jquery.*;
 import utest.Assert in A;
 
 import Assertion.*;
-import Main.*;
+import Main.ansiExecute;
+import Main.parseLog;
+import Main.render;
 import js.Browser.*;
 import js.jquery.Helper.*;
 

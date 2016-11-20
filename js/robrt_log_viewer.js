@@ -555,8 +555,8 @@ Test.prototype = {
 				ing = false;
 			}
 			if(Assertion.enableAssert && !(cmd2 != null && at != null || cmd2 == at)) {
-				haxe_Log.trace("[assert] cmd=" + cmd2,{ fileName : "Test.hx", lineNumber : 27, className : "Test", methodName : "test_parsing"});
-				haxe_Log.trace("[assert] at=" + at,{ fileName : "Test.hx", lineNumber : 27, className : "Test", methodName : "test_parsing"});
+				haxe_Log.trace("[assert] cmd=" + cmd2,{ fileName : "Test.hx", lineNumber : 29, className : "Test", methodName : "test_parsing"});
+				haxe_Log.trace("[assert] at=" + at,{ fileName : "Test.hx", lineNumber : 29, className : "Test", methodName : "test_parsing"});
 				throw new js__$Boot_HaxeError("Assertion failed: " + "(cmd != null && at != null) || cmd == at");
 			}
 			var st = "robrt: start" + (ing?"ing":"ed") + " cmd <" + no + ">";
@@ -568,13 +568,13 @@ Test.prototype = {
 		var finished = function(no1,exit1,at1) {
 			return "robrt: finished cmd <" + no1 + "> with status <" + exit1 + ">" + (at1 != null?": " + at1:"");
 		};
-		utest_Assert.same([result("cmd",99,["bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 37, className : "Test", methodName : "test_parsing"});
-		utest_Assert.same([result("cmd",99,["bar"],8800)],Main.parseLog([echo("cmd"),started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 43, className : "Test", methodName : "test_parsing"});
-		utest_Assert.same([result("cmd",99,["bar"])],Main.parseLog([echo("cmd"),started(11,true),"bar",finished(11,99)].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 50, className : "Test", methodName : "test_parsing"});
-		utest_Assert.same([result("cmd",-99,["bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,-99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 57, className : "Test", methodName : "test_parsing"});
-		utest_Assert.same([result("cmd",-99,["","bar","ar","r","bar",""],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"","\rbar","b\rar","ba\rr","bar\r","\r",finished(11,-99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 63, className : "Test", methodName : "test_parsing"});
-		utest_Assert.same([result("cmd",99,["bar"],8800),result("dmc",77,["foo"],6600)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000"),started(9,null,"dmc","10.100000000"),"foo",finished(9,77,"16.700000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 74, className : "Test", methodName : "test_parsing"});
-		utest_Assert.same([result("cmd",99,["bar"],8800),result("dmc",77,["foo"],6600)],Main.parseLog([echo("cmd"),started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000"),echo("dmc"),"ops",started(9,null,"dmc","10.100000000"),"foo",finished(9,77,"16.700000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 83, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",99,["bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 39, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",99,["bar"],8800)],Main.parseLog([echo("cmd"),started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 45, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",99,["bar"])],Main.parseLog([echo("cmd"),started(11,true),"bar",finished(11,99)].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 52, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",-99,["bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,-99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 59, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",-99,["","bar","ar","r","bar",""],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"","\rbar","b\rar","ba\rr","bar\r","\r",finished(11,-99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 65, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",99,["bar"],8800),result("dmc",77,["foo"],6600)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000"),started(9,null,"dmc","10.100000000"),"foo",finished(9,77,"16.700000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 76, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",99,["bar"],8800),result("dmc",77,["foo"],6600)],Main.parseLog([echo("cmd"),started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000"),echo("dmc"),"ops",started(9,null,"dmc","10.100000000"),"foo",finished(9,77,"16.700000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 85, className : "Test", methodName : "test_parsing"});
 	}
 	,test_ansi_executing: function() {
 		utest_Assert.warn("TODO");

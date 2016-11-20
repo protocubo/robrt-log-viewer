@@ -191,7 +191,7 @@ var Main = function() { };
 Main.__name__ = ["Main"];
 Main.parseCommand = function(lines) {
 	var bpat = new EReg("robrt: start(ed|ing) cmd <(\\d+)>(: ([a-zA-Z0-9\\+/=]+): (\\d+).(\\d+))?","i");
-	var epat = new EReg("robrt: finished cmd <(\\d+)> with status <(\\d+)>(: (\\d+).(\\d+))?","i");
+	var epat = new EReg("robrt: finished cmd <(\\d+)> with status <(-?\\d+)>(: (\\d+).(\\d+))?","i");
 	var prefix = null;
 	var fst = lines.shift();
 	if(StringTools.startsWith(fst,"+ ")) {
@@ -571,7 +571,7 @@ Test.prototype = {
 		utest_Assert.same([result("cmd",99,["bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 37, className : "Test", methodName : "test_parsing"});
 		utest_Assert.same([result("cmd",99,["bar"],8800)],Main.parseLog([echo("cmd"),started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 43, className : "Test", methodName : "test_parsing"});
 		utest_Assert.same([result("cmd",99,["bar"])],Main.parseLog([echo("cmd"),started(11,true),"bar",finished(11,99)].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 50, className : "Test", methodName : "test_parsing"});
-		utest_Assert.warn("TODO tests negative exit codes");
+		utest_Assert.same([result("cmd",-99,["bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,-99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 57, className : "Test", methodName : "test_parsing"});
 		utest_Assert.warn("TODO tests with garbage due to out of order output before 'started'");
 		utest_Assert.warn("TODO tests with carriage returns");
 	}

@@ -10,7 +10,7 @@ class Main {
 	static function parseCommand(lines:Array<String>):Command
 	{
 		var bpat = ~/robrt: start(ed|ing) cmd <(\d+)>(: ([a-zA-Z0-9\+\/=]+): (\d+).(\d+))?/i;
-		var epat = ~/robrt: finished cmd <(\d+)> with status <(\d+)>(: (\d+).(\d+))?/i;
+		var epat = ~/robrt: finished cmd <(\d+)> with status <(-?\d+)>(: (\d+).(\d+))?/i;
 
 		var prefix = null;
 		var fst = lines.shift();

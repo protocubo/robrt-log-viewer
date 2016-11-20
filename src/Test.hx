@@ -53,7 +53,12 @@ class Test {
 				started(11, true),
 				"bar",
 				finished(11, 99)].join("\n")));
-		A.warn("TODO tests negative exit codes");
+		// negative exit codes
+		A.same([result("cmd", -99, ["bar"], 8800)],
+			parseLog([
+				started(11, "cmd", "1.100000000"),
+				"bar",
+				finished(11, -99, "9.900000000")].join("\n")));
 		A.warn("TODO tests with garbage due to out of order output before 'started'");
 		A.warn("TODO tests with carriage returns");
 	}

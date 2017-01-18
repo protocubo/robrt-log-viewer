@@ -103,6 +103,9 @@ class Main {
 		});
 	}
 
+	static function setFavicon(exit)
+		J("#favicon-link").attr("href", 'robrt_${exit == 0 ? "success" : "fail"}.ico');
+
 	public static function render(url:String, ?container:JQuery)
 	{
 		var req = new haxe.Http(url);
@@ -110,6 +113,7 @@ class Main {
 			show(raw.length);
 
 			var log = parseLog(raw);
+			var exit = log.length == 0 ? 0 : Std.parseInt(log[log.length-1].exit);
 			var opts = {
 				lineNumber : 1
 			};
@@ -118,6 +122,7 @@ class Main {
 				var obj = renderCommand(cmd, opts);
 				container.append(JQuery.parseHTML(obj));
 			}
+			setFavicon(exit);
 		};
 		req.onError = function (err) assert(false, err);
 		req.request(false);
@@ -132,8 +137,14 @@ class Main {
 		case pat if (pat.length > 3 && "?unit-tests".startsWith(pat)):
 			JTHIS.ready(function () {
 				var runner = new utest.Runner();
+				var exit = 0;
 				runner.addCase(new Test());
 				utest.ui.Report.create(runner);
+				runner.onProgress.add(function (o) {
+					exit -= o.result.allOk() ? 0 : 1;
+					if (o.done == o.totals)
+						setFavicon(exit);
+				});
 				runner.run();
 			});
 		case _.substr(1) => url:

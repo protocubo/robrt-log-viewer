@@ -379,16 +379,20 @@ Main.setExpansionActions = function(container) {
 		e.stopPropagation();
 	});
 };
+Main.setFavicon = function(exit) {
+	$("#favicon-link").attr("href","robrt_" + (exit == 0 ? "success" : "fail") + ".ico");
+};
 Main.render = function(url,container) {
 	var req = new haxe_Http(url);
 	req.onData = function(raw) {
 		if(Assertion.enableShow) {
-			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 110, className : "Main", methodName : "render"});
+			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 113, className : "Main", methodName : "render"});
 		}
 		var log = Main.parseLog(raw);
+		var exit = log.length == 0 ? 0 : Std.parseInt(log[log.length - 1].exit);
 		var opts = { lineNumber : 1};
 		if(Assertion.enableShow) {
-			haxe_Log.trace("container.length=" + container.length,{ fileName : "Main.hx", lineNumber : 116, className : "Main", methodName : "render"});
+			haxe_Log.trace("container.length=" + container.length,{ fileName : "Main.hx", lineNumber : 120, className : "Main", methodName : "render"});
 		}
 		var _g = 0;
 		while(_g < log.length) {
@@ -398,10 +402,11 @@ Main.render = function(url,container) {
 			var tmp = $.parseHTML(obj);
 			container.append(tmp);
 		}
+		Main.setFavicon(exit);
 	};
 	req.onError = function(err) {
 		if(Assertion.enableAssert) {
-			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 122, className : "Main", methodName : "render"});
+			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 127, className : "Main", methodName : "render"});
 			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
 		}
 	};
@@ -413,7 +418,7 @@ Main.main = function() {
 	var _hx_tmp;
 	if(_g == "") {
 		if(Assertion.enableAssert) {
-			haxe_Log.trace("[assert] " + "nothing to do",{ fileName : "Main.hx", lineNumber : 131, className : "Main", methodName : "main"});
+			haxe_Log.trace("[assert] " + "nothing to do",{ fileName : "Main.hx", lineNumber : 136, className : "Main", methodName : "main"});
 			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
 		}
 	} else {
@@ -421,8 +426,15 @@ Main.main = function() {
 		if(pat.length > 3 && StringTools.startsWith("?unit-tests",pat)) {
 			$(this).ready(function() {
 				var runner = new utest_Runner();
+				var exit = 0;
 				runner.addCase(new Test());
 				utest_ui_Report.create(runner);
+				runner.onProgress.add(function(o) {
+					exit -= o.result.allOk() ? 0 : 1;
+					if(o.done == o.totals) {
+						Main.setFavicon(exit);
+					}
+				});
 				runner.run();
 			});
 		} else {
@@ -2512,6 +2524,20 @@ utest_TestResult.prototype = {
 	,setup: null
 	,teardown: null
 	,assertations: null
+	,allOk: function() {
+		var _g_head = this.assertations.h;
+		while(_g_head != null) {
+			var val = _g_head.item;
+			_g_head = _g_head.next;
+			var l = val;
+			if(l[1] == 0) {
+				break;
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
 	,__class__: utest_TestResult
 };
 var utest_ui_Report = function() { };

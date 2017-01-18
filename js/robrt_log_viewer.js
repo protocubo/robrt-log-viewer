@@ -100,20 +100,29 @@ Lambda.__name__ = ["Lambda"];
 Lambda.array = function(it) {
 	var a = [];
 	var i = $iterator(it)();
-	while(i.hasNext()) a.push(i.next());
+	while(i.hasNext()) {
+		var i1 = i.next();
+		a.push(i1);
+	}
 	return a;
 };
 Lambda.has = function(it,elt) {
 	var x = $iterator(it)();
-	while(x.hasNext()) if(x.next() == elt) {
-		return true;
+	while(x.hasNext()) {
+		var x1 = x.next();
+		if(x1 == elt) {
+			return true;
+		}
 	}
 	return false;
 };
 Lambda.exists = function(it,f) {
 	var x = $iterator(it)();
-	while(x.hasNext()) if(f(x.next())) {
-		return true;
+	while(x.hasNext()) {
+		var x1 = x.next();
+		if(f(x1)) {
+			return true;
+		}
 	}
 	return false;
 };
@@ -213,13 +222,13 @@ Main.parseCommand = function(lines) {
 	var inCompatMode = bpat.matched(3) == null;
 	if(Assertion.enableAssert && !(inCompatMode && prefix != null || !inCompatMode)) {
 		haxe_Log.trace("[assert] bpat.matched(3)=" + bpat.matched(3),{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "parseCommand"});
-		haxe_Log.trace("[assert] inCompatMode=" + (inCompatMode == null?"null":"" + inCompatMode),{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "parseCommand"});
+		haxe_Log.trace("[assert] inCompatMode=" + (inCompatMode == null ? "null" : "" + inCompatMode),{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "parseCommand"});
 		haxe_Log.trace("[assert] prefix=" + prefix,{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "parseCommand"});
 		haxe_Log.trace("[assert] " + "the command must either come from header or from the prefix",{ fileName : "Main.hx", lineNumber : 28, className : "Main", methodName : "parseCommand"});
 		throw new js__$Boot_HaxeError("Assertion failed: " + "(inCompatMode && prefix != null) || !inCompatMode");
 	}
 	var no = bpat.matched(2);
-	var cmd = inCompatMode?HxOverrides.substr(prefix,2,null):haxe_crypto_Base64.decode(bpat.matched(4)).toString();
+	var cmd = inCompatMode ? HxOverrides.substr(prefix,2,null) : haxe_crypto_Base64.decode(bpat.matched(4)).toString();
 	var output = [];
 	while(true) {
 		if(Assertion.enableAssert && lines.length <= 0) {
@@ -254,7 +263,8 @@ Main.parseCommand = function(lines) {
 		duration = null;
 	} else {
 		var start = (parseFloat(bpat.matched(5)) + parseFloat(bpat.matched(6)) / 1e9) * 1e3;
-		duration = (parseFloat(epat.matched(4)) + parseFloat(epat.matched(5)) / 1e9) * 1e3 - start;
+		var finish = (parseFloat(epat.matched(4)) + parseFloat(epat.matched(5)) / 1e9) * 1e3;
+		duration = finish - start;
 	}
 	return { cmd : cmd, exit : exit, duration : duration, output : output};
 };
@@ -265,7 +275,9 @@ Main.parseLog = function(raw) {
 	return cmds;
 };
 Main.ansiExecute = function(output) {
-	var spans = ansiparse(output.join("\n")).map(function(i) {
+	var pseudo = output.join("\n");
+	var segs = ansiparse(pseudo);
+	var spans = segs.map(function(i) {
 		var classes = [];
 		if(i.bold) {
 			classes.push("ansi-bold");
@@ -288,49 +300,73 @@ Main.ansiExecute = function(output) {
 		return [];
 	}
 	return spans.join("").split("\n").map(function(i1) {
-		return i1;
+		var this1 = i1;
+		return this1;
 	});
 };
 Main.renderCommand = function(cmd,opts) {
 	var ret = tink_template__$Html_Html_$Impl_$.buffer();
-	ret.push("<div class=\"cmd-container ");
+	var this1 = "<div class=\"cmd-container ";
+	ret.s += this1;
 	if(cmd.output.length > 0) {
-		ret.push(" allow-expansion ");
+		var this11 = " allow-expansion ";
+		ret.s += this11;
 	}
 	if(cmd.exit != "0") {
-		ret.push(" expanded ");
+		var this12 = " expanded ";
+		ret.s += this12;
 	}
-	ret.push("\">");
-	ret.push("<div class=\"cmd\">\n\t\t<pre><code><span class=\"line-number\">");
-	ret.push(tink_template__$Html_Html_$Impl_$.of(opts.lineNumber++));
-	ret.push("</span>$ ");
-	ret.push(tink_template__$Html_Html_$Impl_$.escape(cmd.cmd));
-	ret.push("<span class=\"exit-code ");
+	var this13 = "\">";
+	ret.s += this13;
+	var this14 = "<div class=\"cmd\">\n\t\t<pre><code><span class=\"line-number\">";
+	ret.s += this14;
+	var b = tink_template__$Html_Html_$Impl_$.of(opts.lineNumber++);
+	ret.s += b;
+	var this15 = "</span>$ ";
+	ret.s += this15;
+	var b1 = tink_template__$Html_Html_$Impl_$.escape(cmd.cmd);
+	ret.s += b1;
+	var this16 = "<span class=\"exit-code ";
+	ret.s += this16;
 	if(cmd.exit != "0") {
-		ret.push("alert");
+		var this17 = "alert";
+		ret.s += this17;
 	}
-	ret.push("\">");
-	ret.push(tink_template__$Html_Html_$Impl_$.escape(cmd.exit));
-	ret.push("</span>");
+	var this18 = "\">";
+	ret.s += this18;
+	var b2 = tink_template__$Html_Html_$Impl_$.escape(cmd.exit);
+	ret.s += b2;
+	var this19 = "</span>";
+	ret.s += this19;
 	if(cmd.duration != null) {
-		ret.push("<span class=\"duration\">");
-		ret.push(tink_template__$Html_Html_$Impl_$.of(Math.round(cmd.duration) / 1e3));
-		ret.push("s</span>");
+		var this110 = "<span class=\"duration\">";
+		ret.s += this110;
+		var b3 = tink_template__$Html_Html_$Impl_$.of(Math.round(cmd.duration) / 1e3);
+		ret.s += b3;
+		var this111 = "s</span>";
+		ret.s += this111;
 	}
-	ret.push("</code></pre>\n\t</div>\n\t<div class=\"output\">\n\t");
+	var this112 = "</code></pre>\n\t</div>\n\t<div class=\"output\">\n\t";
+	ret.s += this112;
 	var _g = 0;
 	var _g1 = Main.ansiExecute(cmd.output);
 	while(_g < _g1.length) {
 		var li = _g1[_g];
 		++_g;
-		ret.push("\n\t\t<pre><code><span class=\"line-number\">");
-		ret.push(tink_template__$Html_Html_$Impl_$.of(opts.lineNumber++));
-		ret.push("</span>");
-		ret.push(li);
-		ret.push("</code></pre>\n\t");
+		var this113 = "\n\t\t<pre><code><span class=\"line-number\">";
+		ret.s += this113;
+		var b4 = tink_template__$Html_Html_$Impl_$.of(opts.lineNumber++);
+		ret.s += b4;
+		var this114 = "</span>";
+		ret.s += this114;
+		ret.s += li;
+		var this115 = "</code></pre>\n\t";
+		ret.s += this115;
 	}
-	ret.push("\n\t</div>\n</div>\n");
-	return tink_template__$Html_HtmlBuffer_$Impl_$.collapse(ret);
+	var this116 = "\n\t</div>\n</div>\n";
+	ret.s += this116;
+	var this2 = ret.s;
+	return this2;
 };
 Main.setExpansionActions = function(container) {
 	container.click(function(e) {
@@ -358,7 +394,8 @@ Main.render = function(url,container) {
 		while(_g < log.length) {
 			var cmd = log[_g];
 			++_g;
-			var tmp = $.parseHTML(tink_template__$Html_Html_$Impl_$.toString(Main.renderCommand(cmd,opts)));
+			var obj = Main.renderCommand(cmd,opts);
+			var tmp = $.parseHTML(obj);
 			container.append(tmp);
 		}
 	};
@@ -379,20 +416,23 @@ Main.main = function() {
 			haxe_Log.trace("[assert] " + "nothing to do",{ fileName : "Main.hx", lineNumber : 131, className : "Main", methodName : "main"});
 			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
 		}
-	} else if(_g.length > 3 && StringTools.startsWith("?unit-tests",_g)) {
-		$(this).ready(function() {
-			var runner = new utest_Runner();
-			runner.addCase(new Test());
-			utest_ui_Report.create(runner);
-			runner.run();
-		});
 	} else {
-		_hx_tmp = HxOverrides.substr(_g,1,null);
-		var url = _hx_tmp;
-		$(this).ready(function() {
-			var container = $("#log-container");
-			Main.render(url,container);
-		});
+		var pat = _g;
+		if(pat.length > 3 && StringTools.startsWith("?unit-tests",pat)) {
+			$(this).ready(function() {
+				var runner = new utest_Runner();
+				runner.addCase(new Test());
+				utest_ui_Report.create(runner);
+				runner.run();
+			});
+		} else {
+			_hx_tmp = HxOverrides.substr(_g,1,null);
+			var url = _hx_tmp;
+			$(this).ready(function() {
+				var container = $("#log-container");
+				Main.render(url,container);
+			});
+		}
 	}
 };
 Math.__name__ = ["Math"];
@@ -545,7 +585,7 @@ Test.prototype = {
 			return haxe_crypto_Base64.encode(haxe_io_Bytes.ofString(txt));
 		};
 		var result = function(cmd,exit,output,duration) {
-			return { cmd : cmd, exit : exit == null?"null":"" + exit, output : output, duration : duration};
+			return { cmd : cmd, exit : exit == null ? "null" : "" + exit, output : output, duration : duration};
 		};
 		var echo = function(cmd1) {
 			return "+ " + cmd1;
@@ -559,22 +599,22 @@ Test.prototype = {
 				haxe_Log.trace("[assert] at=" + at,{ fileName : "Test.hx", lineNumber : 29, className : "Test", methodName : "test_parsing"});
 				throw new js__$Boot_HaxeError("Assertion failed: " + "(cmd != null && at != null) || cmd == at");
 			}
-			var st = "robrt: start" + (ing?"ing":"ed") + " cmd <" + no + ">";
+			var st = "robrt: start" + (ing ? "ing" : "ed") + " cmd <" + no + ">";
 			if(cmd2 != null) {
 				st += ": " + base64(cmd2) + ": " + at;
 			}
 			return st;
 		};
 		var finished = function(no1,exit1,at1) {
-			return "robrt: finished cmd <" + no1 + "> with status <" + exit1 + ">" + (at1 != null?": " + at1:"");
+			return "robrt: finished cmd <" + no1 + "> with status <" + exit1 + ">" + (at1 != null ? ": " + at1 : "");
 		};
-		utest_Assert.same([result("cmd",99,["bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 39, className : "Test", methodName : "test_parsing"});
-		utest_Assert.same([result("cmd",99,["bar"],8800)],Main.parseLog([echo("cmd"),started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 45, className : "Test", methodName : "test_parsing"});
-		utest_Assert.same([result("cmd",99,["bar"])],Main.parseLog([echo("cmd"),started(11,true),"bar",finished(11,99)].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 52, className : "Test", methodName : "test_parsing"});
-		utest_Assert.same([result("cmd",-99,["bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,-99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 59, className : "Test", methodName : "test_parsing"});
-		utest_Assert.same([result("cmd",-99,["","bar","ar","r","bar",""],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"","\rbar","b\rar","ba\rr","bar\r","\r",finished(11,-99,"9.900000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 65, className : "Test", methodName : "test_parsing"});
-		utest_Assert.same([result("cmd",99,["bar"],8800),result("dmc",77,["foo"],6600)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000"),started(9,null,"dmc","10.100000000"),"foo",finished(9,77,"16.700000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 76, className : "Test", methodName : "test_parsing"});
-		utest_Assert.same([result("cmd",99,["bar"],8800),result("dmc",77,["foo"],6600)],Main.parseLog([echo("cmd"),started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000"),echo("dmc"),"ops",started(9,null,"dmc","10.100000000"),"foo",finished(9,77,"16.700000000")].join("\n")),null,null,{ fileName : "Test.hx", lineNumber : 85, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",99,["bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000")].join("\n")),null,null,null,{ fileName : "Test.hx", lineNumber : 39, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",99,["bar"],8800)],Main.parseLog([echo("cmd"),started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000")].join("\n")),null,null,null,{ fileName : "Test.hx", lineNumber : 45, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",99,["bar"])],Main.parseLog([echo("cmd"),started(11,true),"bar",finished(11,99)].join("\n")),null,null,null,{ fileName : "Test.hx", lineNumber : 52, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",-99,["bar"],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,-99,"9.900000000")].join("\n")),null,null,null,{ fileName : "Test.hx", lineNumber : 59, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",-99,["","bar","ar","r","bar",""],8800)],Main.parseLog([started(11,null,"cmd","1.100000000"),"","\rbar","b\rar","ba\rr","bar\r","\r",finished(11,-99,"9.900000000")].join("\n")),null,null,null,{ fileName : "Test.hx", lineNumber : 65, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",99,["bar"],8800),result("dmc",77,["foo"],6600)],Main.parseLog([started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000"),started(9,null,"dmc","10.100000000"),"foo",finished(9,77,"16.700000000")].join("\n")),null,null,null,{ fileName : "Test.hx", lineNumber : 76, className : "Test", methodName : "test_parsing"});
+		utest_Assert.same([result("cmd",99,["bar"],8800),result("dmc",77,["foo"],6600)],Main.parseLog([echo("cmd"),started(11,null,"cmd","1.100000000"),"bar",finished(11,99,"9.900000000"),echo("dmc"),"ops",started(9,null,"dmc","10.100000000"),"foo",finished(9,77,"16.700000000")].join("\n")),null,null,null,{ fileName : "Test.hx", lineNumber : 85, className : "Test", methodName : "test_parsing"});
 	}
 	,test_ansi_executing: function() {
 		utest_Assert.warn("TODO");
@@ -744,7 +784,8 @@ haxe_CallStack.itemToString = function(b,s) {
 		break;
 	case 1:
 		var m = s[2];
-		b.b = (b.b += "module ") + (m == null?"null":"" + m);
+		b.b += "module ";
+		b.b += m == null ? "null" : "" + m;
 		break;
 	case 2:
 		var line = s[4];
@@ -754,8 +795,9 @@ haxe_CallStack.itemToString = function(b,s) {
 			haxe_CallStack.itemToString(b,s1);
 			b.b += " (";
 		}
-		b.b = (b.b += file == null?"null":"" + file) + " line ";
-		b.b += line == null?"null":"" + line;
+		b.b += file == null ? "null" : "" + file;
+		b.b += " line ";
+		b.b += line == null ? "null" : "" + line;
 		if(s1 != null) {
 			b.b += ")";
 		}
@@ -763,12 +805,14 @@ haxe_CallStack.itemToString = function(b,s) {
 	case 3:
 		var meth = s[3];
 		var cname = s[2];
-		b.b = (b.b += cname == null?"null":"" + cname) + ".";
-		b.b += meth == null?"null":"" + meth;
+		b.b += cname == null ? "null" : "" + cname;
+		b.b += ".";
+		b.b += meth == null ? "null" : "" + meth;
 		break;
 	case 4:
 		var n = s[2];
-		b.b = (b.b += "local function #") + (n == null?"null":"" + n);
+		b.b += "local function #";
+		b.b += n == null ? "null" : "" + n;
 		break;
 	}
 };
@@ -791,7 +835,7 @@ haxe_CallStack.makeStack = function(s) {
 				var meth = path.pop();
 				var file = rie10.matched(2);
 				var line1 = Std.parseInt(rie10.matched(3));
-				m.push(haxe_StackItem.FilePos(meth == "Anonymous function"?haxe_StackItem.LocalFunction():meth == "Global code"?null:haxe_StackItem.Method(path.join("."),meth),file,line1));
+				m.push(haxe_StackItem.FilePos(meth == "Anonymous function" ? haxe_StackItem.LocalFunction() : meth == "Global code" ? null : haxe_StackItem.Method(path.join("."),meth),file,line1));
 			} else {
 				m.push(haxe_StackItem.Module(StringTools.trim(line)));
 			}
@@ -860,7 +904,7 @@ haxe_Http.prototype = {
 			}
 			if(s != null && s >= 200 && s < 400) {
 				me.req = null;
-				$bind(me,me.onData)(me.responseData = r.responseText);
+				me.onData(me.responseData = r.responseText);
 			} else if(s == null) {
 				me.req = null;
 				me.onError("Failed to connect or resolve host");
@@ -877,7 +921,7 @@ haxe_Http.prototype = {
 				default:
 					me.req = null;
 					me.responseData = r.responseText;
-					$bind(me,me.onError)("Http Error #" + r.status);
+					me.onError("Http Error #" + r.status);
 				}
 			}
 		};
@@ -909,7 +953,7 @@ haxe_Http.prototype = {
 				r.open("POST",this.url,this.async);
 			} else if(uri != null) {
 				var question = this.url.split("?").length <= 1;
-				r.open("GET",this.url + (question?"?":"&") + uri,this.async);
+				r.open("GET",this.url + (question ? "?" : "&") + uri,this.async);
 				uri = null;
 			} else {
 				r.open("GET",this.url,this.async);
@@ -918,7 +962,7 @@ haxe_Http.prototype = {
 			haxe_CallStack.lastException = e1;
 			if (e1 instanceof js__$Boot_HaxeError) e1 = e1.val;
 			me.req = null;
-			$bind(this,this.onError)(e1.toString());
+			this.onError(e1.toString());
 			return;
 		}
 		r.withCredentials = this.withCredentials;
@@ -1049,9 +1093,12 @@ haxe_io_Bytes.prototype = {
 			} else if(c < 224) {
 				s += fcc((c & 63) << 6 | b[i++] & 127);
 			} else if(c < 240) {
-				s += fcc((c & 31) << 12 | (b[i++] & 127) << 6 | b[i++] & 127);
+				var c2 = b[i++];
+				s += fcc((c & 31) << 12 | (c2 & 127) << 6 | b[i++] & 127);
 			} else {
-				var u = (c & 15) << 18 | (b[i++] & 127) << 12 | (b[i++] & 127) << 6 | b[i++] & 127;
+				var c21 = b[i++];
+				var c3 = b[i++];
+				var u = (c & 15) << 18 | (c21 & 127) << 12 | (c3 & 127) << 6 | b[i++] & 127;
 				s += fcc((u >> 10) + 55232);
 				s += fcc(u & 1023 | 56320);
 			}
@@ -1071,7 +1118,8 @@ haxe_crypto_Base64.encode = function(bytes,complement) {
 	}
 	var str = new haxe_crypto_BaseCode(haxe_crypto_Base64.BYTES).encodeBytes(bytes).toString();
 	if(complement) {
-		switch(bytes.length % 3) {
+		var _g = bytes.length % 3;
+		switch(_g) {
 		case 1:
 			str += "==";
 			break;
@@ -1111,7 +1159,7 @@ haxe_crypto_BaseCode.prototype = {
 		var nbits = this.nbits;
 		var base = this.base;
 		var size = b.length * 8 / nbits | 0;
-		var out = new haxe_io_Bytes(new ArrayBuffer(size + (b.length * 8 % nbits == 0?0:1)));
+		var out = new haxe_io_Bytes(new ArrayBuffer(size + (b.length * 8 % nbits == 0 ? 0 : 1)));
 		var buf = 0;
 		var curbits = 0;
 		var mask = (1 << nbits) - 1;
@@ -1134,17 +1182,21 @@ haxe_crypto_BaseCode.prototype = {
 	,initTable: function() {
 		var tbl = [];
 		var _g = 0;
-		while(_g < 256) tbl[_g++] = -1;
+		while(_g < 256) {
+			var i = _g++;
+			tbl[i] = -1;
+		}
 		var _g1 = 0;
 		var _g2 = this.base.length;
 		while(_g1 < _g2) {
-			var i = _g1++;
-			tbl[this.base.b[i]] = i;
+			var i1 = _g1++;
+			tbl[this.base.b[i1]] = i1;
 		}
 		this.tbl = tbl;
 	}
 	,decodeBytes: function(b) {
 		var nbits = this.nbits;
+		var base = this.base;
 		if(this.tbl == null) {
 			this.initTable();
 		}
@@ -1264,7 +1316,7 @@ js_Boot.__unhtml = function(s) {
 	return s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
 };
 js_Boot.__trace = function(v,i) {
-	var msg = i != null?i.fileName + ":" + i.lineNumber + ": ":"";
+	var msg = i != null ? i.fileName + ":" + i.lineNumber + ": " : "";
 	msg += js_Boot.__string_rec(v,"");
 	if(i != null && i.customParams != null) {
 		var _g = 0;
@@ -1346,7 +1398,7 @@ js_Boot.__string_rec = function(o,s) {
 			var _g2 = l;
 			while(_g11 < _g2) {
 				var i2 = _g11++;
-				str1 += (i2 > 0?",":"") + js_Boot.__string_rec(o[i2],s);
+				str1 += (i2 > 0 ? "," : "") + js_Boot.__string_rec(o[i2],s);
 			}
 			str1 += "]";
 			return str1;
@@ -1401,8 +1453,9 @@ js_Boot.__interfLoop = function(cc,cl) {
 		var _g1 = 0;
 		var _g = intf.length;
 		while(_g1 < _g) {
-			var i = intf[_g1++];
-			if(i == cl || js_Boot.__interfLoop(i,cl)) {
+			var i = _g1++;
+			var i1 = intf[i];
+			if(i1 == cl || js_Boot.__interfLoop(i1,cl)) {
 				return true;
 			}
 		}
@@ -1453,10 +1506,10 @@ js_Boot.__instanceof = function(o,cl) {
 		} else {
 			return false;
 		}
-		if(cl == Class?o.__name__ != null:false) {
+		if(cl == Class ? o.__name__ != null : false) {
 			return true;
 		}
-		if(cl == Enum?o.__ename__ != null:false) {
+		if(cl == Enum ? o.__ename__ != null : false) {
 			return true;
 		}
 		return o.__enum__ == cl;
@@ -1502,15 +1555,19 @@ var js_html_compat_ArrayBuffer = function(a) {
 		this.a = [];
 		var _g1 = 0;
 		var _g = len;
-		while(_g1 < _g) this.a[_g1++] = 0;
+		while(_g1 < _g) {
+			var i = _g1++;
+			this.a[i] = 0;
+		}
 		this.byteLength = len;
 	}
 };
 js_html_compat_ArrayBuffer.__name__ = ["js","html","compat","ArrayBuffer"];
 js_html_compat_ArrayBuffer.sliceImpl = function(begin,end) {
-	var u = new Uint8Array(this,begin,end == null?null:end - begin);
+	var u = new Uint8Array(this,begin,end == null ? null : end - begin);
 	var result = new ArrayBuffer(u.byteLength);
-	new Uint8Array(result).set(u);
+	var resultArray = new Uint8Array(result);
+	resultArray.set(u);
 	return result;
 };
 js_html_compat_ArrayBuffer.prototype = {
@@ -1611,46 +1668,40 @@ tink_template__$Html_Html_$Impl_$.escape = function(s) {
 	var pos = 0;
 	var max = s.length;
 	var ret = "";
-	while(pos < max) switch(s.charAt(pos++)) {
-	case "\"":
-		var start1 = start;
-		start = pos;
-		ret += s.substring(start1,start - 1) + "&quot;";
-		break;
-	case "&":
-		var start2 = start;
-		start = pos;
-		ret += s.substring(start2,start - 1) + "&amp;";
-		break;
-	case "<":
-		var start3 = start;
-		start = pos;
-		ret += s.substring(start3,start - 1) + "&lt;";
-		break;
-	case ">":
-		var start4 = start;
-		start = pos;
-		ret += s.substring(start4,start - 1) + "&gt;";
-		break;
+	while(pos < max) {
+		var _g = s.charAt(pos++);
+		switch(_g) {
+		case "\"":
+			var start1 = start;
+			start = pos;
+			ret += s.substring(start1,start - 1) + "&quot;";
+			break;
+		case "&":
+			var start2 = start;
+			start = pos;
+			ret += s.substring(start2,start - 1) + "&amp;";
+			break;
+		case "<":
+			var start3 = start;
+			start = pos;
+			ret += s.substring(start3,start - 1) + "&lt;";
+			break;
+		case ">":
+			var start4 = start;
+			start = pos;
+			ret += s.substring(start4,start - 1) + "&gt;";
+			break;
+		}
 	}
-	return ret += HxOverrides.substr(s,start,null);
-};
-tink_template__$Html_Html_$Impl_$.toString = function(this1) {
+	var this1 = ret += HxOverrides.substr(s,start,null);
 	return this1;
-};
-tink_template__$Html_Html_$Impl_$.ofMultiple = function(parts) {
-	return parts.join("");
 };
 tink_template__$Html_Html_$Impl_$.of = function(a) {
 	return tink_template__$Html_Html_$Impl_$.escape(Std.string(a));
 };
 tink_template__$Html_Html_$Impl_$.buffer = function() {
-	return [];
-};
-var tink_template__$Html_HtmlBuffer_$Impl_$ = {};
-tink_template__$Html_HtmlBuffer_$Impl_$.__name__ = ["tink","template","_Html","HtmlBuffer_Impl_"];
-tink_template__$Html_HtmlBuffer_$Impl_$.collapse = function(this1) {
-	return tink_template__$Html_Html_$Impl_$.ofMultiple(this1);
+	var this1 = { s : ""};
+	return this1;
 };
 var utest_Assert = function() { };
 utest_Assert.__name__ = ["utest","Assert"];
@@ -1696,21 +1747,36 @@ utest_Assert.getTypeName = function(v) {
 	case 5:
 		return "function";
 	case 6:
-		return Type.getClassName(_g[2]);
+		var c = _g[2];
+		return Type.getClassName(c);
 	case 7:
-		return Type.getEnumName(_g[2]);
+		var e = _g[2];
+		return Type.getEnumName(e);
 	case 8:
 		return "`Unknown`";
 	}
 };
 utest_Assert.isIterable = function(v,isAnonym) {
-	if(!Lambda.has(isAnonym?Reflect.fields(v):Type.getInstanceFields(v == null?null:js_Boot.getClass(v)),"iterator")) {
+	var fields;
+	if(isAnonym) {
+		fields = Reflect.fields(v);
+	} else {
+		var o = v;
+		fields = Type.getInstanceFields(o == null ? null : js_Boot.getClass(o));
+	}
+	if(!Lambda.has(fields,"iterator")) {
 		return false;
 	}
 	return Reflect.isFunction(Reflect.field(v,"iterator"));
 };
 utest_Assert.isIterator = function(v,isAnonym) {
-	var fields = isAnonym?Reflect.fields(v):Type.getInstanceFields(v == null?null:js_Boot.getClass(v));
+	var fields;
+	if(isAnonym) {
+		fields = Reflect.fields(v);
+	} else {
+		var o = v;
+		fields = Type.getInstanceFields(o == null ? null : js_Boot.getClass(o));
+	}
 	if(!Lambda.has(fields,"next") || !Lambda.has(fields,"hasNext")) {
 		return false;
 	}
@@ -1720,24 +1786,24 @@ utest_Assert.isIterator = function(v,isAnonym) {
 		return false;
 	}
 };
-utest_Assert.sameAs = function(expected,value,status) {
+utest_Assert.sameAs = function(expected,value,status,approx) {
 	var texpected = utest_Assert.getTypeName(expected);
 	var tvalue = utest_Assert.getTypeName(value);
-	if(texpected != tvalue) {
-		status.error = "expected type " + texpected + " but it is " + tvalue + (status.path == ""?"":" for field " + status.path);
+	if(texpected != tvalue && !(texpected == "Int" && tvalue == "Float" || texpected == "Float" && tvalue == "Int")) {
+		status.error = "expected type " + texpected + " but it is " + tvalue + (status.path == "" ? "" : " for field " + status.path);
 		return false;
 	}
 	var _g = Type["typeof"](expected);
 	switch(_g[1]) {
-	case 0:case 1:case 3:
-		if(expected != value) {
-			status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == ""?"":" for field " + status.path);
+	case 1:case 2:
+		if(!utest_Assert._floatEquals(expected,value,approx)) {
+			status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == "" ? "" : " for field " + status.path);
 			return false;
 		}
 		return true;
-	case 2:
-		if(!utest_Assert._floatEquals(expected,value)) {
-			status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == ""?"":" for field " + status.path);
+	case 0:case 3:
+		if(expected != value) {
+			status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == "" ? "" : " for field " + status.path);
 			return false;
 		}
 		return true;
@@ -1751,7 +1817,7 @@ utest_Assert.sameAs = function(expected,value,status) {
 				var field = fields[_g1];
 				++_g1;
 				HxOverrides.remove(tfields,field);
-				status.path = path == ""?field:path + "." + field;
+				status.path = path == "" ? field : path + "." + field;
 				if(!Object.prototype.hasOwnProperty.call(value,field)) {
 					status.error = "expected field " + status.path + " does not exist in " + utest_Assert.q(value);
 					return false;
@@ -1760,7 +1826,8 @@ utest_Assert.sameAs = function(expected,value,status) {
 				if(Reflect.isFunction(e)) {
 					continue;
 				}
-				if(!utest_Assert.sameAs(e,Reflect.field(value,field),status)) {
+				var v = Reflect.field(value,field);
+				if(!utest_Assert.sameAs(e,v,status,approx)) {
 					return false;
 				}
 			}
@@ -1771,7 +1838,7 @@ utest_Assert.sameAs = function(expected,value,status) {
 		}
 		if(utest_Assert.isIterator(expected,true)) {
 			if(!utest_Assert.isIterator(value,true)) {
-				status.error = "expected Iterable but it is not " + (status.path == ""?"":" for field " + status.path);
+				status.error = "expected Iterable but it is not " + (status.path == "" ? "" : " for field " + status.path);
 				return false;
 			}
 			if(status.recursive || status.path == "") {
@@ -1782,7 +1849,7 @@ utest_Assert.sameAs = function(expected,value,status) {
 					return value;
 				}});
 				if(evalues.length != vvalues.length) {
-					status.error = "expected " + evalues.length + " values in Iterator but they are " + vvalues.length + (status.path == ""?"":" for field " + status.path);
+					status.error = "expected " + evalues.length + " values in Iterator but they are " + vvalues.length + (status.path == "" ? "" : " for field " + status.path);
 					return false;
 				}
 				var path1 = status.path;
@@ -1790,9 +1857,9 @@ utest_Assert.sameAs = function(expected,value,status) {
 				var _g2 = evalues.length;
 				while(_g11 < _g2) {
 					var i = _g11++;
-					status.path = path1 == ""?"iterator[" + i + "]":path1 + "[" + i + "]";
-					if(!utest_Assert.sameAs(evalues[i],vvalues[i],status)) {
-						status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == ""?"":" for field " + status.path);
+					status.path = path1 == "" ? "iterator[" + i + "]" : path1 + "[" + i + "]";
+					if(!utest_Assert.sameAs(evalues[i],vvalues[i],status,approx)) {
+						status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == "" ? "" : " for field " + status.path);
 						return false;
 					}
 				}
@@ -1801,14 +1868,14 @@ utest_Assert.sameAs = function(expected,value,status) {
 		}
 		if(utest_Assert.isIterable(expected,true)) {
 			if(!utest_Assert.isIterable(value,true)) {
-				status.error = "expected Iterator but it is not " + (status.path == ""?"":" for field " + status.path);
+				status.error = "expected Iterator but it is not " + (status.path == "" ? "" : " for field " + status.path);
 				return false;
 			}
 			if(status.recursive || status.path == "") {
 				var evalues1 = Lambda.array(expected);
 				var vvalues1 = Lambda.array(value);
 				if(evalues1.length != vvalues1.length) {
-					status.error = "expected " + evalues1.length + " values in Iterable but they are " + vvalues1.length + (status.path == ""?"":" for field " + status.path);
+					status.error = "expected " + evalues1.length + " values in Iterable but they are " + vvalues1.length + (status.path == "" ? "" : " for field " + status.path);
 					return false;
 				}
 				var path2 = status.path;
@@ -1816,8 +1883,8 @@ utest_Assert.sameAs = function(expected,value,status) {
 				var _g3 = evalues1.length;
 				while(_g12 < _g3) {
 					var i1 = _g12++;
-					status.path = path2 == ""?"iterable[" + i1 + "]":path2 + "[" + i1 + "]";
-					if(!utest_Assert.sameAs(evalues1[i1],vvalues1[i1],status)) {
+					status.path = path2 == "" ? "iterable[" + i1 + "]" : path2 + "[" + i1 + "]";
+					if(!utest_Assert.sameAs(evalues1[i1],vvalues1[i1],status,approx)) {
 						return false;
 					}
 				}
@@ -1827,16 +1894,17 @@ utest_Assert.sameAs = function(expected,value,status) {
 		return true;
 	case 5:
 		if(!Reflect.compareMethods(expected,value)) {
-			status.error = "expected same function reference" + (status.path == ""?"":" for field " + status.path);
+			status.error = "expected same function reference" + (status.path == "" ? "" : " for field " + status.path);
 			return false;
 		}
 		return true;
 	case 6:
-		var cexpected = Type.getClassName(_g[2]);
+		var c = _g[2];
+		var cexpected = Type.getClassName(c);
 		var o = value;
-		var cvalue = Type.getClassName(o == null?null:js_Boot.getClass(o));
+		var cvalue = Type.getClassName(o == null ? null : js_Boot.getClass(o));
 		if(cexpected != cvalue) {
-			status.error = "expected instance of " + utest_Assert.q(cexpected) + " but it is " + utest_Assert.q(cvalue) + (status.path == ""?"":" for field " + status.path);
+			status.error = "expected instance of " + utest_Assert.q(cexpected) + " but it is " + utest_Assert.q(cvalue) + (status.path == "" ? "" : " for field " + status.path);
 			return false;
 		}
 		if(typeof(expected) == "string" && expected != value) {
@@ -1846,7 +1914,7 @@ utest_Assert.sameAs = function(expected,value,status) {
 		if((expected instanceof Array) && expected.__enum__ == null) {
 			if(status.recursive || status.path == "") {
 				if(expected.length != value.length) {
-					status.error = "expected " + Std.string(expected.length) + " elements but they are " + Std.string(value.length) + (status.path == ""?"":" for field " + status.path);
+					status.error = "expected " + Std.string(expected.length) + " elements but they are " + Std.string(value.length) + (status.path == "" ? "" : " for field " + status.path);
 					return false;
 				}
 				var path3 = status.path;
@@ -1854,9 +1922,9 @@ utest_Assert.sameAs = function(expected,value,status) {
 				var _g4 = expected.length;
 				while(_g13 < _g4) {
 					var i2 = _g13++;
-					status.path = path3 == ""?"array[" + i2 + "]":path3 + "[" + i2 + "]";
-					if(!utest_Assert.sameAs(expected[i2],value[i2],status)) {
-						status.error = "expected " + utest_Assert.q(expected[i2]) + " but it is " + utest_Assert.q(value[i2]) + (status.path == ""?"":" for field " + status.path);
+					status.path = path3 == "" ? "array[" + i2 + "]" : path3 + "[" + i2 + "]";
+					if(!utest_Assert.sameAs(expected[i2],value[i2],status,approx)) {
+						status.error = "expected " + utest_Assert.q(expected[i2]) + " but it is " + utest_Assert.q(value[i2]) + (status.path == "" ? "" : " for field " + status.path);
 						return false;
 					}
 				}
@@ -1865,7 +1933,7 @@ utest_Assert.sameAs = function(expected,value,status) {
 		}
 		if(js_Boot.__instanceof(expected,Date)) {
 			if(expected.getTime() != value.getTime()) {
-				status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == ""?"":" for field " + status.path);
+				status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == "" ? "" : " for field " + status.path);
 				return false;
 			}
 			return true;
@@ -1882,7 +1950,7 @@ utest_Assert.sameAs = function(expected,value,status) {
 				while(_g14 < _g5) {
 					var i3 = _g14++;
 					if(ebytes.b[i3] != vbytes.b[i3]) {
-						status.error = "expected byte " + ebytes.b[i3] + " but it is " + vbytes.b[i3] + (status.path == ""?"":" for field " + status.path);
+						status.error = "expected byte " + ebytes.b[i3] + " but it is " + vbytes.b[i3] + (status.path == "" ? "" : " for field " + status.path);
 						return false;
 					}
 				}
@@ -1895,14 +1963,20 @@ utest_Assert.sameAs = function(expected,value,status) {
 				var vmap = js_Boot.__cast(value , haxe_IMap);
 				var _g6 = [];
 				var k = map.keys();
-				while(k.hasNext()) _g6.push(k.next());
+				while(k.hasNext()) {
+					var k1 = k.next();
+					_g6.push(k1);
+				}
 				var keys = _g6;
 				var _g15 = [];
-				var k1 = vmap.keys();
-				while(k1.hasNext()) _g15.push(k1.next());
+				var k2 = vmap.keys();
+				while(k2.hasNext()) {
+					var k3 = k2.next();
+					_g15.push(k3);
+				}
 				var vkeys = _g15;
 				if(keys.length != vkeys.length) {
-					status.error = "expected " + keys.length + " keys but they are " + vkeys.length + (status.path == ""?"":" for field " + status.path);
+					status.error = "expected " + keys.length + " keys but they are " + vkeys.length + (status.path == "" ? "" : " for field " + status.path);
 					return false;
 				}
 				var path4 = status.path;
@@ -1910,9 +1984,9 @@ utest_Assert.sameAs = function(expected,value,status) {
 				while(_g21 < keys.length) {
 					var key = keys[_g21];
 					++_g21;
-					status.path = path4 == ""?"hash[" + Std.string(key) + "]":path4 + "[" + Std.string(key) + "]";
-					if(!utest_Assert.sameAs(map.get(key),vmap.get(key),status)) {
-						status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == ""?"":" for field " + status.path);
+					status.path = path4 == "" ? "hash[" + Std.string(key) + "]" : path4 + "[" + Std.string(key) + "]";
+					if(!utest_Assert.sameAs(map.get(key),vmap.get(key),status,approx)) {
+						status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == "" ? "" : " for field " + status.path);
 						return false;
 					}
 				}
@@ -1928,7 +2002,7 @@ utest_Assert.sameAs = function(expected,value,status) {
 					return value;
 				}});
 				if(evalues2.length != vvalues2.length) {
-					status.error = "expected " + evalues2.length + " values in Iterator but they are " + vvalues2.length + (status.path == ""?"":" for field " + status.path);
+					status.error = "expected " + evalues2.length + " values in Iterator but they are " + vvalues2.length + (status.path == "" ? "" : " for field " + status.path);
 					return false;
 				}
 				var path5 = status.path;
@@ -1936,9 +2010,9 @@ utest_Assert.sameAs = function(expected,value,status) {
 				var _g7 = evalues2.length;
 				while(_g16 < _g7) {
 					var i4 = _g16++;
-					status.path = path5 == ""?"iterator[" + i4 + "]":path5 + "[" + i4 + "]";
-					if(!utest_Assert.sameAs(evalues2[i4],vvalues2[i4],status)) {
-						status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == ""?"":" for field " + status.path);
+					status.path = path5 == "" ? "iterator[" + i4 + "]" : path5 + "[" + i4 + "]";
+					if(!utest_Assert.sameAs(evalues2[i4],vvalues2[i4],status,approx)) {
+						status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == "" ? "" : " for field " + status.path);
 						return false;
 					}
 				}
@@ -1950,7 +2024,7 @@ utest_Assert.sameAs = function(expected,value,status) {
 				var evalues3 = Lambda.array(expected);
 				var vvalues3 = Lambda.array(value);
 				if(evalues3.length != vvalues3.length) {
-					status.error = "expected " + evalues3.length + " values in Iterable but they are " + vvalues3.length + (status.path == ""?"":" for field " + status.path);
+					status.error = "expected " + evalues3.length + " values in Iterable but they are " + vvalues3.length + (status.path == "" ? "" : " for field " + status.path);
 					return false;
 				}
 				var path6 = status.path;
@@ -1958,8 +2032,8 @@ utest_Assert.sameAs = function(expected,value,status) {
 				var _g8 = evalues3.length;
 				while(_g17 < _g8) {
 					var i5 = _g17++;
-					status.path = path6 == ""?"iterable[" + i5 + "]":path6 + "[" + i5 + "]";
-					if(!utest_Assert.sameAs(evalues3[i5],vvalues3[i5],status)) {
+					status.path = path6 == "" ? "iterable[" + i5 + "]" : path6 + "[" + i5 + "]";
+					if(!utest_Assert.sameAs(evalues3[i5],vvalues3[i5],status,approx)) {
 						return false;
 					}
 				}
@@ -1968,33 +2042,35 @@ utest_Assert.sameAs = function(expected,value,status) {
 		}
 		if(status.recursive || status.path == "") {
 			var o1 = expected;
-			var fields1 = Type.getInstanceFields(o1 == null?null:js_Boot.getClass(o1));
+			var fields1 = Type.getInstanceFields(o1 == null ? null : js_Boot.getClass(o1));
 			var path7 = status.path;
 			var _g9 = 0;
 			while(_g9 < fields1.length) {
 				var field1 = fields1[_g9];
 				++_g9;
-				status.path = path7 == ""?field1:path7 + "." + field1;
+				status.path = path7 == "" ? field1 : path7 + "." + field1;
 				var e1 = Reflect.field(expected,field1);
 				if(Reflect.isFunction(e1)) {
 					continue;
 				}
-				if(!utest_Assert.sameAs(e1,Reflect.field(value,field1),status)) {
+				var v1 = Reflect.field(value,field1);
+				if(!utest_Assert.sameAs(e1,v1,status,approx)) {
 					return false;
 				}
 			}
 		}
 		return true;
 	case 7:
-		var eexpected = Type.getEnumName(_g[2]);
+		var e2 = _g[2];
+		var eexpected = Type.getEnumName(e2);
 		var evalue = Type.getEnumName(Type.getEnum(value));
 		if(eexpected != evalue) {
-			status.error = "expected enumeration of " + utest_Assert.q(eexpected) + " but it is " + utest_Assert.q(evalue) + (status.path == ""?"":" for field " + status.path);
+			status.error = "expected enumeration of " + utest_Assert.q(eexpected) + " but it is " + utest_Assert.q(evalue) + (status.path == "" ? "" : " for field " + status.path);
 			return false;
 		}
 		if(status.recursive || status.path == "") {
 			if(expected[1] != value[1]) {
-				status.error = "expected " + utest_Assert.q(expected[0]) + " but it is " + utest_Assert.q(value[0]) + (status.path == ""?"":" for field " + status.path);
+				status.error = "expected " + utest_Assert.q(expected[0]) + " but it is " + utest_Assert.q(value[0]) + (status.path == "" ? "" : " for field " + status.path);
 				return false;
 			}
 			var eparams = expected.slice(2);
@@ -2004,9 +2080,9 @@ utest_Assert.sameAs = function(expected,value,status) {
 			var _g10 = eparams.length;
 			while(_g18 < _g10) {
 				var i6 = _g18++;
-				status.path = path8 == ""?"enum[" + i6 + "]":path8 + "[" + i6 + "]";
-				if(!utest_Assert.sameAs(eparams[i6],vparams[i6],status)) {
-					status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == ""?"":" for field " + status.path);
+				status.path = path8 == "" ? "enum[" + i6 + "]" : path8 + "[" + i6 + "]";
+				if(!utest_Assert.sameAs(eparams[i6],vparams[i6],status,approx)) {
+					status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == "" ? "" : " for field " + status.path);
 					return false;
 				}
 			}
@@ -2024,12 +2100,15 @@ utest_Assert.q = function(v) {
 		return Std.string(v);
 	}
 };
-utest_Assert.same = function(expected,value,recursive,msg,pos) {
-	var status = { recursive : null == recursive?true:recursive, path : "", error : null};
-	if(utest_Assert.sameAs(expected,value,status)) {
+utest_Assert.same = function(expected,value,recursive,msg,approx,pos) {
+	if(null == approx) {
+		approx = 1e-5;
+	}
+	var status = { recursive : null == recursive ? true : recursive, path : "", error : null};
+	if(utest_Assert.sameAs(expected,value,status,approx)) {
 		utest_Assert.pass(msg,pos);
 	} else {
-		utest_Assert.fail(msg == null?status.error:msg,pos);
+		utest_Assert.fail(msg == null ? status.error : msg,pos);
 	}
 };
 utest_Assert.pass = function(msg,pos) {
@@ -2125,11 +2204,14 @@ utest_Notifier.prototype = {
 	,__class__: utest_Notifier
 };
 var utest_Runner = function() {
+	this.globalPattern = null;
 	this.fixtures = [];
 	this.onProgress = new utest_Dispatcher();
 	this.onStart = new utest_Dispatcher();
 	this.onComplete = new utest_Dispatcher();
 	this.onPrecheck = new utest_Dispatcher();
+	this.onTestStart = new utest_Dispatcher();
+	this.onTestComplete = new utest_Dispatcher();
 	this.length = 0;
 };
 utest_Runner.__name__ = ["utest","Runner"];
@@ -2139,7 +2221,10 @@ utest_Runner.prototype = {
 	,onStart: null
 	,onComplete: null
 	,onPrecheck: null
+	,onTestStart: null
+	,onTestComplete: null
 	,length: null
+	,globalPattern: null
 	,addCase: function(test,setup,teardown,prefix,pattern) {
 		if(prefix == null) {
 			prefix = "test";
@@ -2159,8 +2244,9 @@ utest_Runner.prototype = {
 		if(!this.isMethod(test,teardown)) {
 			teardown = null;
 		}
-		var fields = Type.getInstanceFields(test == null?null:js_Boot.getClass(test));
-		if(pattern == null) {
+		var o = test;
+		var fields = Type.getInstanceFields(o == null ? null : js_Boot.getClass(o));
+		if(this.globalPattern == null && pattern == null) {
 			var _g = 0;
 			while(_g < fields.length) {
 				var field = fields[_g];
@@ -2174,6 +2260,11 @@ utest_Runner.prototype = {
 				this.addFixture(new utest_TestFixture(test,field,setup,teardown));
 			}
 		} else {
+			if(this.globalPattern != null) {
+				pattern = this.globalPattern;
+			} else {
+				pattern = pattern;
+			}
 			var _g1 = 0;
 			while(_g1 < fields.length) {
 				var field1 = fields[_g1];
@@ -2217,9 +2308,11 @@ utest_Runner.prototype = {
 		var handler = new utest_TestHandler(fixture);
 		handler.onComplete.add($bind(this,this.testComplete));
 		handler.onPrecheck.add(($_=this.onPrecheck,$bind($_,$_.dispatch)));
+		this.onTestStart.dispatch(handler);
 		handler.execute();
 	}
 	,testComplete: function(h) {
+		this.onTestComplete.dispatch(h);
 		this.onProgress.dispatch({ result : utest_TestResult.ofHandler(h), done : this.pos, totals : this.length});
 		this.runNext();
 	}
@@ -2298,7 +2391,7 @@ utest_TestHandler.prototype = {
 	,expireson: null
 	,setTimeout: function(timeout) {
 		var newexpire = new Date().getTime() / 1000 + timeout / 1000;
-		this.expireson = this.expireson == null?newexpire:newexpire > this.expireson?newexpire:this.expireson;
+		this.expireson = this.expireson == null ? newexpire : newexpire > this.expireson ? newexpire : this.expireson;
 	}
 	,bindHandler: function() {
 		utest_Assert.results = this.results;
@@ -2369,7 +2462,8 @@ utest_TestHandler.prototype = {
 			return;
 		}
 		this.bindHandler();
-		Reflect.field(this.fixture.target,name).apply(this.fixture.target,[]);
+		var o = this.fixture.target;
+		Reflect.field(this.fixture.target,name).apply(o,[]);
 	}
 	,tested: function() {
 		if(this.results.length == 0) {
@@ -2402,7 +2496,7 @@ utest_TestResult.__name__ = ["utest","TestResult"];
 utest_TestResult.ofHandler = function(handler) {
 	var r = new utest_TestResult();
 	var o = handler.fixture.target;
-	var path = Type.getClassName(o == null?null:js_Boot.getClass(o)).split(".");
+	var path = Type.getClassName(o == null ? null : js_Boot.getClass(o)).split(".");
 	r.cls = path.pop();
 	r.pack = path.join(".");
 	r.method = handler.fixture.method;
@@ -2464,7 +2558,7 @@ utest_ui_common_ClassResult.prototype = {
 	,add: function(result) {
 		var key = result.methodName;
 		var _this = this.fixtures;
-		if(__map_reserved[key] != null?_this.existsReserved(key):_this.h.hasOwnProperty(key)) {
+		if(__map_reserved[key] != null ? _this.existsReserved(key) : _this.h.hasOwnProperty(key)) {
 			throw new js__$Boot_HaxeError("invalid duplicated fixture result");
 		}
 		this.stats.wire(result.stats);
@@ -2491,7 +2585,10 @@ utest_ui_common_ClassResult.prototype = {
 		}
 		var names = [];
 		var name = this.fixtures.keys();
-		while(name.hasNext()) names.push(name.next());
+		while(name.hasNext()) {
+			var name1 = name.next();
+			names.push(name1);
+		}
 		if(errorsHavePriority) {
 			var me = this;
 			names.sort(function(a,b) {
@@ -2638,7 +2735,10 @@ utest_ui_common_PackageResult.prototype = {
 	,packages: null
 	,stats: null
 	,addResult: function(result,flattenPackage) {
-		this.getOrCreateClass(this.getOrCreatePackage(result.pack,flattenPackage,this),result.cls,result.setup,result.teardown).add(this.createFixture(result.method,result.assertations));
+		var pack = this.getOrCreatePackage(result.pack,flattenPackage,this);
+		var cls = this.getOrCreateClass(pack,result.cls,result.setup,result.teardown);
+		var fix = this.createFixture(result.method,result.assertations);
+		cls.add(fix);
 	}
 	,addClass: function(result) {
 		var key = result.className;
@@ -2701,7 +2801,10 @@ utest_ui_common_PackageResult.prototype = {
 		}
 		var names = [];
 		var name = this.classes.keys();
-		while(name.hasNext()) names.push(name.next());
+		while(name.hasNext()) {
+			var name1 = name.next();
+			names.push(name1);
+		}
 		if(errorsHavePriority) {
 			var me = this;
 			names.sort(function(a,b) {
@@ -2757,7 +2860,10 @@ utest_ui_common_PackageResult.prototype = {
 			names.push("");
 		}
 		var name = this.packages.keys();
-		while(name.hasNext()) names.push(name.next());
+		while(name.hasNext()) {
+			var name1 = name.next();
+			names.push(name1);
+		}
 		if(errorsHavePriority) {
 			var me = this;
 			names.sort(function(a,b) {
@@ -2807,7 +2913,10 @@ utest_ui_common_PackageResult.prototype = {
 	,createFixture: function(method,assertations) {
 		var f = new utest_ui_common_FixtureResult(method);
 		var assertation = $iterator(assertations)();
-		while(assertation.hasNext()) f.add(assertation.next());
+		while(assertation.hasNext()) {
+			var assertation1 = assertation.next();
+			f.add(assertation1);
+		}
 		return f;
 	}
 	,getOrCreateClass: function(pack,cls,setup,teardown) {
@@ -2845,7 +2954,8 @@ utest_ui_common_PackageResult.prototype = {
 var utest_ui_common_ReportTools = function() { };
 utest_ui_common_ReportTools.__name__ = ["utest","ui","common","ReportTools"];
 utest_ui_common_ReportTools.hasHeader = function(report,stats) {
-	switch(report.displayHeader[1]) {
+	var _g = report.displayHeader;
+	switch(_g[1]) {
 	case 0:
 		return true;
 	case 1:
@@ -2854,7 +2964,8 @@ utest_ui_common_ReportTools.hasHeader = function(report,stats) {
 		if(!stats.isOk) {
 			return true;
 		}
-		switch(report.displaySuccessResults[1]) {
+		var _g1 = report.displaySuccessResults;
+		switch(_g1[1]) {
 		case 0:case 2:
 			return true;
 		case 1:
@@ -2867,7 +2978,8 @@ utest_ui_common_ReportTools.skipResult = function(report,stats,isOk) {
 	if(!stats.isOk) {
 		return false;
 	}
-	switch(report.displaySuccessResults[1]) {
+	var _g = report.displaySuccessResults;
+	switch(_g[1]) {
 	case 0:
 		return false;
 	case 1:
@@ -3050,7 +3162,7 @@ utest_ui_text_HtmlReport.prototype = {
 	,_traceTime: null
 	,_trace: function(v,infos) {
 		var time = new Date().getTime() / 1000;
-		var delta = this._traceTime == null?0:time - this._traceTime;
+		var delta = this._traceTime == null ? 0 : time - this._traceTime;
 		this._traces.push({ msg : StringTools.htmlEscape(Std.string(v)), infos : infos, time : time - this.startTime, delta : delta, stack : haxe_CallStack.callStack()});
 		this._traceTime = new Date().getTime() / 1000;
 	}
@@ -3102,7 +3214,8 @@ utest_ui_text_HtmlReport.prototype = {
 		buf.b += Std.string(x);
 	}
 	,blockNumbers: function(buf,stats) {
-		buf.b += Std.string("<div class=\"" + this.cls(stats) + "bg statnumbers\">");
+		var x = "<div class=\"" + this.cls(stats) + "bg statnumbers\">";
+		buf.b += Std.string(x);
 		this.resultNumbers(buf,stats);
 		buf.b += "</div>";
 	}
@@ -3111,7 +3224,7 @@ utest_ui_text_HtmlReport.prototype = {
 			addNL = true;
 		}
 		var parts = [];
-		var nl = addNL?"\n":"";
+		var nl = addNL ? "\n" : "";
 		var last = null;
 		var count = 1;
 		var _g = 0;
@@ -3130,17 +3243,19 @@ utest_ui_text_HtmlReport.prototype = {
 			} else {
 				count = 1;
 				last = part;
-				parts.push(part);
+				parts.push(last);
 			}
 		}
-		return "<div>" + ("<ul><li>" + parts.join("</li>" + nl + "<li>") + "</li></ul>" + nl) + "</div>" + nl;
+		var s = "<ul><li>" + parts.join("</li>" + nl + "<li>") + "</li></ul>" + nl;
+		return "<div>" + s + "</div>" + nl;
 	}
 	,addFixture: function(buf,result,name,isOk) {
 		if(utest_ui_common_ReportTools.skipResult(this,result.stats,isOk)) {
 			return;
 		}
 		buf.b += "<li class=\"fixture\"><div class=\"li\">";
-		buf.b += Std.string("<span class=\"" + this.cls(result.stats) + "bg fixtureresult\">");
+		var x = "<span class=\"" + this.cls(result.stats) + "bg fixtureresult\">";
+		buf.b += Std.string(x);
 		if(result.stats.isOk) {
 			buf.b += "OK ";
 		} else if(result.stats.hasErrors) {
@@ -3150,51 +3265,63 @@ utest_ui_text_HtmlReport.prototype = {
 		} else if(result.stats.hasWarnings) {
 			buf.b += "WARNING ";
 		}
-		buf.b = (buf.b += "</span>") + "<div class=\"fixturedetails\">";
-		buf.b = (buf.b += Std.string("<strong>" + name + "</strong>")) + ": ";
+		buf.b += "</span>";
+		buf.b += "<div class=\"fixturedetails\">";
+		buf.b += Std.string("<strong>" + name + "</strong>");
+		buf.b += ": ";
 		this.resultNumbers(buf,result.stats);
 		var messages = [];
 		var _g = result.iterator();
 		while(_g.head != null) {
 			var val = _g.head.item;
 			_g.head = _g.head.next;
-			switch(val[1]) {
+			var assertation = val;
+			switch(assertation[1]) {
 			case 0:
 				break;
 			case 1:
-				messages.push("<strong>line " + val[3].lineNumber + "</strong>: <em>" + StringTools.htmlEscape(val[2]) + "</em>");
+				var pos = assertation[3];
+				var msg = assertation[2];
+				messages.push("<strong>line " + pos.lineNumber + "</strong>: <em>" + StringTools.htmlEscape(msg) + "</em>");
 				break;
 			case 2:
-				var e = val[2];
-				messages.push("<strong>error</strong>: <em>" + this.getErrorDescription(e) + "</em>\n<br/><strong>stack</strong>:" + this.getErrorStack(val[3],e));
+				var s = assertation[3];
+				var e = assertation[2];
+				messages.push("<strong>error</strong>: <em>" + this.getErrorDescription(e) + "</em>\n<br/><strong>stack</strong>:" + this.getErrorStack(s,e));
 				break;
 			case 3:
-				var e1 = val[2];
-				messages.push("<strong>setup error</strong>: " + this.getErrorDescription(e1) + "\n<br/><strong>stack</strong>:" + this.getErrorStack(val[3],e1));
+				var s1 = assertation[3];
+				var e1 = assertation[2];
+				messages.push("<strong>setup error</strong>: " + this.getErrorDescription(e1) + "\n<br/><strong>stack</strong>:" + this.getErrorStack(s1,e1));
 				break;
 			case 4:
-				var e2 = val[2];
-				messages.push("<strong>tear-down error</strong>: " + this.getErrorDescription(e2) + "\n<br/><strong>stack</strong>:" + this.getErrorStack(val[3],e2));
+				var s2 = assertation[3];
+				var e2 = assertation[2];
+				messages.push("<strong>tear-down error</strong>: " + this.getErrorDescription(e2) + "\n<br/><strong>stack</strong>:" + this.getErrorStack(s2,e2));
 				break;
 			case 5:
-				messages.push("<strong>missed async call(s)</strong>: " + val[2]);
+				var missedAsyncs = assertation[2];
+				messages.push("<strong>missed async call(s)</strong>: " + missedAsyncs);
 				break;
 			case 6:
-				var e3 = val[2];
-				messages.push("<strong>async error</strong>: " + this.getErrorDescription(e3) + "\n<br/><strong>stack</strong>:" + this.getErrorStack(val[3],e3));
+				var s3 = assertation[3];
+				var e3 = assertation[2];
+				messages.push("<strong>async error</strong>: " + this.getErrorDescription(e3) + "\n<br/><strong>stack</strong>:" + this.getErrorStack(s3,e3));
 				break;
 			case 7:
-				messages.push(StringTools.htmlEscape(val[2]));
+				var msg1 = assertation[2];
+				messages.push(StringTools.htmlEscape(msg1));
 				break;
 			}
 		}
 		if(messages.length > 0) {
 			buf.b += "<div class=\"testoutput\">";
-			var x = messages.join("<br/>");
-			buf.b += Std.string(x);
+			var x1 = messages.join("<br/>");
+			buf.b += Std.string(x1);
 			buf.b += "</div>\n";
 		}
-		buf.b = (buf.b += "</div>\n") + "</div></li>\n";
+		buf.b += "</div>\n";
+		buf.b += "</div></li>\n";
 	}
 	,getErrorDescription: function(e) {
 		return Std.string(e);
@@ -3206,7 +3333,8 @@ utest_ui_text_HtmlReport.prototype = {
 		if(utest_ui_common_ReportTools.skipResult(this,result.stats,isOk)) {
 			return;
 		}
-		buf.b = (buf.b += "<li>") + Std.string("<h2 class=\"classname\">" + name + "</h2>");
+		buf.b += "<li>";
+		buf.b += Std.string("<h2 class=\"classname\">" + name + "</h2>");
 		this.blockNumbers(buf,result.stats);
 		buf.b += "<ul>\n";
 		var _g = 0;
@@ -3216,7 +3344,8 @@ utest_ui_text_HtmlReport.prototype = {
 			++_g;
 			this.addFixture(buf,result.get(mname),mname,isOk);
 		}
-		buf.b = (buf.b += "</ul>\n") + "</li>\n";
+		buf.b += "</ul>\n";
+		buf.b += "</li>\n";
 	}
 	,addPackages: function(buf,result,isOk) {
 		if(utest_ui_common_ReportTools.skipResult(this,result.stats,isOk)) {
@@ -3239,7 +3368,8 @@ utest_ui_text_HtmlReport.prototype = {
 		if(name == "" && result.classNames().length == 0) {
 			return;
 		}
-		buf.b = (buf.b += "<li>") + Std.string("<h2>" + name + "</h2>");
+		buf.b += "<li>";
+		buf.b += Std.string("<h2>" + name + "</h2>");
 		this.blockNumbers(buf,result.stats);
 		buf.b += "<ul>\n";
 		var _g = 0;
@@ -3249,14 +3379,144 @@ utest_ui_text_HtmlReport.prototype = {
 			++_g;
 			this.addClass(buf,result.getClass(cname),cname,isOk);
 		}
-		buf.b = (buf.b += "</ul>\n") + "</li>\n";
+		buf.b += "</ul>\n";
+		buf.b += "</li>\n";
+	}
+	,getTextResults: function() {
+		var newline = "\n";
+		var indents = function(count) {
+			var _g = [];
+			var _g2 = 0;
+			var _g1 = count;
+			while(_g2 < _g1) {
+				var i = _g2++;
+				_g.push("  ");
+			}
+			return _g.join("");
+		};
+		var dumpStack = function(stack) {
+			if(stack.length == 0) {
+				return "";
+			}
+			var parts = haxe_CallStack.toString(stack).split("\n");
+			var r = [];
+			var _g3 = 0;
+			while(_g3 < parts.length) {
+				var part = parts[_g3];
+				++_g3;
+				if(part.indexOf(" utest.") >= 0) {
+					continue;
+				}
+				r.push(part);
+			}
+			return r.join(newline);
+		};
+		var buf_b = "";
+		var _g4 = 0;
+		var _g11 = this.result.packageNames();
+		while(_g4 < _g11.length) {
+			var pname = _g11[_g4];
+			++_g4;
+			var pack = this.result.getPackage(pname);
+			if(utest_ui_common_ReportTools.skipResult(this,pack.stats,this.result.stats.isOk)) {
+				continue;
+			}
+			var _g21 = 0;
+			var _g31 = pack.classNames();
+			while(_g21 < _g31.length) {
+				var cname = _g31[_g21];
+				++_g21;
+				var cls = pack.getClass(cname);
+				if(utest_ui_common_ReportTools.skipResult(this,cls.stats,this.result.stats.isOk)) {
+					continue;
+				}
+				buf_b += Std.string((pname == "" ? "" : pname + ".") + cname + newline);
+				var _g41 = 0;
+				var _g5 = cls.methodNames();
+				while(_g41 < _g5.length) {
+					var mname = _g5[_g41];
+					++_g41;
+					var fix = cls.get(mname);
+					if(utest_ui_common_ReportTools.skipResult(this,fix.stats,this.result.stats.isOk)) {
+						continue;
+					}
+					buf_b += Std.string(indents(1) + mname + ": ");
+					if(fix.stats.isOk) {
+						buf_b += "OK ";
+					} else if(fix.stats.hasErrors) {
+						buf_b += "ERROR ";
+					} else if(fix.stats.hasFailures) {
+						buf_b += "FAILURE ";
+					} else if(fix.stats.hasWarnings) {
+						buf_b += "WARNING ";
+					}
+					var messages = "";
+					var _g6 = fix.iterator();
+					while(_g6.head != null) {
+						var val = _g6.head.item;
+						_g6.head = _g6.head.next;
+						var assertation = val;
+						switch(assertation[1]) {
+						case 0:
+							buf_b += ".";
+							break;
+						case 1:
+							var pos = assertation[3];
+							var msg = assertation[2];
+							buf_b += "F";
+							messages += indents(2) + "line: " + pos.lineNumber + ", " + msg + newline;
+							break;
+						case 2:
+							var s = assertation[3];
+							var e = assertation[2];
+							buf_b += "E";
+							messages += indents(2) + Std.string(e) + dumpStack(s) + newline;
+							break;
+						case 3:
+							var s1 = assertation[3];
+							var e1 = assertation[2];
+							buf_b += "S";
+							messages += indents(2) + Std.string(e1) + dumpStack(s1) + newline;
+							break;
+						case 4:
+							var s2 = assertation[3];
+							var e2 = assertation[2];
+							buf_b += "T";
+							messages += indents(2) + Std.string(e2) + dumpStack(s2) + newline;
+							break;
+						case 5:
+							var s3 = assertation[3];
+							var missedAsyncs = assertation[2];
+							buf_b += "O";
+							messages += indents(2) + "missed async calls: " + missedAsyncs + dumpStack(s3) + newline;
+							break;
+						case 6:
+							var s4 = assertation[3];
+							var e3 = assertation[2];
+							buf_b += "A";
+							messages += indents(2) + Std.string(e3) + dumpStack(s4) + newline;
+							break;
+						case 7:
+							var msg1 = assertation[2];
+							buf_b += "W";
+							messages += indents(2) + msg1 + newline;
+							break;
+						}
+					}
+					buf_b += newline == null ? "null" : "" + newline;
+					buf_b += messages == null ? "null" : "" + messages;
+				}
+			}
+		}
+		return buf_b;
 	}
 	,getHeader: function() {
 		var buf = new StringBuf();
 		if(!utest_ui_common_ReportTools.hasHeader(this,this.result.stats)) {
 			return "";
 		}
-		var time = ((new Date().getTime() / 1000 - this.startTime) * 1000 | 0) / 1000;
+		var end = new Date().getTime() / 1000;
+		var time = ((end - this.startTime) * 1000 | 0) / 1000;
 		var msg = "TEST OK";
 		if(this.result.stats.hasErrors) {
 			msg = "TEST ERRORS";
@@ -3265,7 +3525,8 @@ utest_ui_text_HtmlReport.prototype = {
 		} else if(this.result.stats.hasWarnings) {
 			msg = "WARNING REPORTED";
 		}
-		buf.b += Std.string("<h1 class=\"" + this.cls(this.result.stats) + "bg header\">" + msg + "</h1>\n");
+		var x = "<h1 class=\"" + this.cls(this.result.stats) + "bg header\">" + msg + "</h1>\n";
+		buf.b += Std.string(x);
 		buf.b += "<div class=\"headerinfo\">";
 		this.resultNumbers(buf,this.result.stats);
 		buf.b += Std.string(" performed on <strong>" + utest_ui_text_HtmlReport.platform + "</strong>, executed in <strong> " + time + " sec. </strong></div >\n ");
@@ -3276,7 +3537,7 @@ utest_ui_text_HtmlReport.prototype = {
 		if(this._traces == null || this._traces.length == 0) {
 			return "";
 		}
-		buf_b = "<div class=\"trace\"><h2>traces</h2><ol>";
+		buf_b += "<div class=\"trace\"><h2>traces</h2><ol>";
 		var _g = 0;
 		var _g1 = this._traces;
 		while(_g < _g1.length) {
@@ -3286,7 +3547,7 @@ utest_ui_text_HtmlReport.prototype = {
 			var stack = StringTools.replace(this.formatStack(t.stack,false),"'","\\'");
 			var method = "<span class=\"tracepackage\">" + t.infos.className + "</span><br/>" + t.infos.methodName + "(" + t.infos.lineNumber + ")";
 			buf_b += Std.string("<span class=\"tracepos\" onmouseover=\"utestTooltip(this.parentNode, '" + stack + "')\" onmouseout=\"utestRemoveTooltip()\">");
-			buf_b += method == null?"null":"" + method;
+			buf_b += method == null ? "null" : "" + method;
 			buf_b += "</span><span class=\"tracetime\">";
 			buf_b += Std.string("@ " + this.formatTime(t.time));
 			if(Math.round(t.delta * 1000) > 0) {
@@ -3327,6 +3588,10 @@ utest_ui_text_HtmlReport.prototype = {
 		this.result = result;
 		this.handler(this);
 		this.restoreTrace();
+		var exposedResult = { isOk : result.stats.isOk, message : this.getTextResults()};
+		if('undefined' != typeof window) {
+			window.utest_result = exposedResult;
+		}
 	}
 	,formatTime: function(t) {
 		return Math.round(t * 1000) + " ms";
@@ -3414,8 +3679,9 @@ utest_ui_text_PlainTextReport.prototype = {
 	,indents: function(c) {
 		var s = "";
 		var _g1 = 0;
-		while(_g1 < c) {
-			++_g1;
+		var _g = c;
+		while(_g1 < _g) {
+			var _ = _g1++;
 			s += this.indent;
 		}
 		return s;
@@ -3441,7 +3707,8 @@ utest_ui_text_PlainTextReport.prototype = {
 		if(!utest_ui_common_ReportTools.hasHeader(this,result.stats)) {
 			return;
 		}
-		var time = ((this.getTime() - this.startTime) * 1000 | 0) / 1000;
+		var end = this.getTime();
+		var time = ((end - this.startTime) * 1000 | 0) / 1000;
 		buf.b += Std.string("\nassertations: " + result.stats.assertations + this.newline);
 		buf.b += Std.string("successes: " + result.stats.successes + this.newline);
 		buf.b += Std.string("errors: " + result.stats.errors + this.newline);
@@ -3449,7 +3716,7 @@ utest_ui_text_PlainTextReport.prototype = {
 		buf.b += Std.string("warnings: " + result.stats.warnings + this.newline);
 		buf.b += Std.string("execution time: " + time + this.newline);
 		buf.b += Std.string(this.newline);
-		buf.b += Std.string("results: " + (result.stats.isOk?"ALL TESTS OK (success: true)":"SOME TESTS FAILURES (success: false)"));
+		buf.b += Std.string("results: " + (result.stats.isOk ? "ALL TESTS OK (success: true)" : "SOME TESTS FAILURES (success: false)"));
 		buf.b += Std.string(this.newline);
 	}
 	,result: null
@@ -3474,7 +3741,7 @@ utest_ui_text_PlainTextReport.prototype = {
 				if(utest_ui_common_ReportTools.skipResult(this,cls.stats,this.result.stats.isOk)) {
 					continue;
 				}
-				buf.b += Std.string((pname == ""?"":pname + ".") + cname + this.newline);
+				buf.b += Std.string((pname == "" ? "" : pname + ".") + cname + this.newline);
 				var _g4 = 0;
 				var _g5 = cls.methodNames();
 				while(_g4 < _g5.length) {
@@ -3484,7 +3751,8 @@ utest_ui_text_PlainTextReport.prototype = {
 					if(utest_ui_common_ReportTools.skipResult(this,fix.stats,this.result.stats.isOk)) {
 						continue;
 					}
-					buf.b += Std.string(this.indents(1) + mname + ": ");
+					var x = this.indents(1) + mname + ": ";
+					buf.b += Std.string(x);
 					if(fix.stats.isOk) {
 						buf.b += "OK ";
 					} else if(fix.stats.hasErrors) {
@@ -3499,41 +3767,56 @@ utest_ui_text_PlainTextReport.prototype = {
 					while(_g6.head != null) {
 						var val = _g6.head.item;
 						_g6.head = _g6.head.next;
-						switch(val[1]) {
+						var assertation = val;
+						switch(assertation[1]) {
 						case 0:
 							buf.b += ".";
 							break;
 						case 1:
+							var pos = assertation[3];
+							var msg = assertation[2];
 							buf.b += "F";
-							messages += this.indents(2) + "line: " + val[3].lineNumber + ", " + val[2] + this.newline;
+							messages += this.indents(2) + "line: " + pos.lineNumber + ", " + msg + this.newline;
 							break;
 						case 2:
+							var s = assertation[3];
+							var e = assertation[2];
 							buf.b += "E";
-							messages += this.indents(2) + Std.string(val[2]) + this.dumpStack(val[3]) + this.newline;
+							messages += this.indents(2) + Std.string(e) + this.dumpStack(s) + this.newline;
 							break;
 						case 3:
+							var s1 = assertation[3];
+							var e1 = assertation[2];
 							buf.b += "S";
-							messages += this.indents(2) + Std.string(val[2]) + this.dumpStack(val[3]) + this.newline;
+							messages += this.indents(2) + Std.string(e1) + this.dumpStack(s1) + this.newline;
 							break;
 						case 4:
+							var s2 = assertation[3];
+							var e2 = assertation[2];
 							buf.b += "T";
-							messages += this.indents(2) + Std.string(val[2]) + this.dumpStack(val[3]) + this.newline;
+							messages += this.indents(2) + Std.string(e2) + this.dumpStack(s2) + this.newline;
 							break;
 						case 5:
+							var s3 = assertation[3];
+							var missedAsyncs = assertation[2];
 							buf.b += "O";
-							messages += this.indents(2) + "missed async calls: " + val[2] + this.dumpStack(val[3]) + this.newline;
+							messages += this.indents(2) + "missed async calls: " + missedAsyncs + this.dumpStack(s3) + this.newline;
 							break;
 						case 6:
+							var s4 = assertation[3];
+							var e3 = assertation[2];
 							buf.b += "A";
-							messages += this.indents(2) + Std.string(val[2]) + this.dumpStack(val[3]) + this.newline;
+							messages += this.indents(2) + Std.string(e3) + this.dumpStack(s4) + this.newline;
 							break;
 						case 7:
+							var msg1 = assertation[2];
 							buf.b += "W";
-							messages += this.indents(2) + val[2] + this.newline;
+							messages += this.indents(2) + msg1 + this.newline;
 							break;
 						}
 					}
-					buf.b = (buf.b += Std.string(this.newline)) + (messages == null?"null":"" + messages);
+					buf.b += Std.string(this.newline);
+					buf.b += messages == null ? "null" : "" + messages;
 				}
 			}
 		}
@@ -3543,10 +3826,10 @@ utest_ui_text_PlainTextReport.prototype = {
 		this.result = result;
 		this.handler(this);
 		if(typeof process != "undefined") {
-			process.exit(result.stats.isOk?0:1);
+			process.exit(result.stats.isOk ? 0 : 1);
 		}
 		if(typeof phantom != "undefined") {
-			phantom.exit(result.stats.isOk?0:1);
+			phantom.exit(result.stats.isOk ? 0 : 1);
 		}
 	}
 	,__class__: utest_ui_text_PlainTextReport

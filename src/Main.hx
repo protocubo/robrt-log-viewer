@@ -90,6 +90,7 @@ class Main {
 	}
 
 	@:template static function renderCommand(cmd:Command, opts:{ lineNumber : Int });
+	@:template static function renderMessage(msg:String);
 
 	static function setExpansionActions(container:JQuery)
 	{
@@ -106,8 +107,9 @@ class Main {
 	static function setFavicon(exit)
 		J("#favicon-link").attr("href", 'robrt_${exit == 0 ? "success" : "fail"}.ico');
 
-	public static function render(url:String, ?container:JQuery)
+	public static function render(url:String, container:JQuery)
 	{
+		container.append(JQuery.parseHTML(renderMessage('Loading log... ($url)')));
 		var req = new haxe.Http(url);
 		req.onData = function (raw) {
 			show(raw.length);
@@ -120,6 +122,7 @@ class Main {
 			show(container.length);
 			for (cmd in log) {
 				var obj = renderCommand(cmd, opts);
+				container.children(".message").remove();
 				container.append(JQuery.parseHTML(obj));
 			}
 			setFavicon(exit);

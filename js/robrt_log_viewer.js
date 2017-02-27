@@ -368,6 +368,17 @@ Main.renderCommand = function(cmd,opts) {
 	var this2 = ret.s;
 	return this2;
 };
+Main.renderMessage = function(msg) {
+	var ret = tink_template__$Html_Html_$Impl_$.buffer();
+	var this1 = "<div class=\"message\">\n\t<pre><code><span class=\"line-number\">_</span># ";
+	ret.s += this1;
+	var b = tink_template__$Html_Html_$Impl_$.escape(msg);
+	ret.s += b;
+	var this11 = "<span class=\"exit-code\">?</span></code></pre>\n</div>\n";
+	ret.s += this11;
+	var this2 = ret.s;
+	return this2;
+};
 Main.setExpansionActions = function(container) {
 	container.click(function(e) {
 		var target = $(e.target).parents(".cmd-container");
@@ -383,30 +394,33 @@ Main.setFavicon = function(exit) {
 	$("#favicon-link").attr("href","robrt_" + (exit == 0 ? "success" : "fail") + ".ico");
 };
 Main.render = function(url,container) {
+	var tmp = $.parseHTML(Main.renderMessage("Loading log... (" + url + ")"));
+	container.append(tmp);
 	var req = new haxe_Http(url);
 	req.onData = function(raw) {
 		if(Assertion.enableShow) {
-			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 113, className : "Main", methodName : "render"});
+			haxe_Log.trace("raw.length=" + raw.length,{ fileName : "Main.hx", lineNumber : 115, className : "Main", methodName : "render"});
 		}
 		var log = Main.parseLog(raw);
 		var exit = log.length == 0 ? 0 : Std.parseInt(log[log.length - 1].exit);
 		var opts = { lineNumber : 1};
 		if(Assertion.enableShow) {
-			haxe_Log.trace("container.length=" + container.length,{ fileName : "Main.hx", lineNumber : 120, className : "Main", methodName : "render"});
+			haxe_Log.trace("container.length=" + container.length,{ fileName : "Main.hx", lineNumber : 122, className : "Main", methodName : "render"});
 		}
 		var _g = 0;
 		while(_g < log.length) {
 			var cmd = log[_g];
 			++_g;
 			var obj = Main.renderCommand(cmd,opts);
-			var tmp = $.parseHTML(obj);
-			container.append(tmp);
+			container.children(".message").remove();
+			var tmp1 = $.parseHTML(obj);
+			container.append(tmp1);
 		}
 		Main.setFavicon(exit);
 	};
 	req.onError = function(err) {
 		if(Assertion.enableAssert) {
-			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 127, className : "Main", methodName : "render"});
+			haxe_Log.trace("[assert] err=" + err,{ fileName : "Main.hx", lineNumber : 130, className : "Main", methodName : "render"});
 			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
 		}
 	};
@@ -418,7 +432,7 @@ Main.main = function() {
 	var _hx_tmp;
 	if(_g == "") {
 		if(Assertion.enableAssert) {
-			haxe_Log.trace("[assert] " + "nothing to do",{ fileName : "Main.hx", lineNumber : 136, className : "Main", methodName : "main"});
+			haxe_Log.trace("[assert] " + "nothing to do",{ fileName : "Main.hx", lineNumber : 139, className : "Main", methodName : "main"});
 			throw new js__$Boot_HaxeError("Assertion failed: " + "false");
 		}
 	} else {
@@ -1919,9 +1933,13 @@ utest_Assert.sameAs = function(expected,value,status,approx) {
 			status.error = "expected instance of " + utest_Assert.q(cexpected) + " but it is " + utest_Assert.q(cvalue) + (status.path == "" ? "" : " for field " + status.path);
 			return false;
 		}
-		if(typeof(expected) == "string" && expected != value) {
-			status.error = "expected '" + Std.string(expected) + "' but it is '" + Std.string(value) + "'";
-			return false;
+		if(typeof(expected) == "string") {
+			if(expected == value) {
+				return true;
+			} else {
+				status.error = "expected string '" + Std.string(expected) + "' but it is '" + Std.string(value) + "'";
+				return false;
+			}
 		}
 		if((expected instanceof Array) && expected.__enum__ == null) {
 			if(status.recursive || status.path == "") {
@@ -1936,7 +1954,7 @@ utest_Assert.sameAs = function(expected,value,status,approx) {
 					var i2 = _g13++;
 					status.path = path3 == "" ? "array[" + i2 + "]" : path3 + "[" + i2 + "]";
 					if(!utest_Assert.sameAs(expected[i2],value[i2],status,approx)) {
-						status.error = "expected " + utest_Assert.q(expected[i2]) + " but it is " + utest_Assert.q(value[i2]) + (status.path == "" ? "" : " for field " + status.path);
+						status.error = "expected array element at [" + i2 + "] to be " + utest_Assert.q(expected[i2]) + " but it is " + utest_Assert.q(value[i2]) + (status.path == "" ? "" : " for field " + status.path);
 						return false;
 					}
 				}
@@ -2082,7 +2100,7 @@ utest_Assert.sameAs = function(expected,value,status,approx) {
 		}
 		if(status.recursive || status.path == "") {
 			if(expected[1] != value[1]) {
-				status.error = "expected " + utest_Assert.q(expected[0]) + " but it is " + utest_Assert.q(value[0]) + (status.path == "" ? "" : " for field " + status.path);
+				status.error = "expected enum constructor " + utest_Assert.q(expected[0]) + " but it is " + utest_Assert.q(value[0]) + (status.path == "" ? "" : " for field " + status.path);
 				return false;
 			}
 			var eparams = expected.slice(2);
@@ -2094,7 +2112,7 @@ utest_Assert.sameAs = function(expected,value,status,approx) {
 				var i6 = _g18++;
 				status.path = path8 == "" ? "enum[" + i6 + "]" : path8 + "[" + i6 + "]";
 				if(!utest_Assert.sameAs(eparams[i6],vparams[i6],status,approx)) {
-					status.error = "expected " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == "" ? "" : " for field " + status.path);
+					status.error = "expected enum param " + utest_Assert.q(expected) + " but it is " + utest_Assert.q(value) + (status.path == "" ? "" : " for field " + status.path) + " with " + status.error;
 					return false;
 				}
 			}
@@ -2237,7 +2255,13 @@ utest_Runner.prototype = {
 	,onTestComplete: null
 	,length: null
 	,globalPattern: null
-	,addCase: function(test,setup,teardown,prefix,pattern) {
+	,addCase: function(test,setup,teardown,prefix,pattern,setupAsync,teardownAsync) {
+		if(teardownAsync == null) {
+			teardownAsync = "teardownAsync";
+		}
+		if(setupAsync == null) {
+			setupAsync = "setupAsync";
+		}
 		if(prefix == null) {
 			prefix = "test";
 		}
@@ -2253,8 +2277,14 @@ utest_Runner.prototype = {
 		if(!this.isMethod(test,setup)) {
 			setup = null;
 		}
+		if(!this.isMethod(test,setupAsync)) {
+			setupAsync = null;
+		}
 		if(!this.isMethod(test,teardown)) {
 			teardown = null;
+		}
+		if(!this.isMethod(test,teardownAsync)) {
+			teardownAsync = null;
 		}
 		var o = test;
 		var fields = Type.getInstanceFields(o == null ? null : js_Boot.getClass(o));
@@ -2269,7 +2299,7 @@ utest_Runner.prototype = {
 				if(!this.isMethod(test,field)) {
 					continue;
 				}
-				this.addFixture(new utest_TestFixture(test,field,setup,teardown));
+				this.addFixture(new utest_TestFixture(test,field,setup,teardown,setupAsync,teardownAsync));
 			}
 		} else {
 			if(this.globalPattern != null) {
@@ -2287,7 +2317,7 @@ utest_Runner.prototype = {
 				if(!this.isMethod(test,field1)) {
 					continue;
 				}
-				this.addFixture(new utest_TestFixture(test,field1,setup,teardown));
+				this.addFixture(new utest_TestFixture(test,field1,setup,teardown,setupAsync,teardownAsync));
 			}
 		}
 	}
@@ -2330,18 +2360,22 @@ utest_Runner.prototype = {
 	}
 	,__class__: utest_Runner
 };
-var utest_TestFixture = function(target,method,setup,teardown) {
+var utest_TestFixture = function(target,method,setup,teardown,setupAsync,teardownAsync) {
 	this.target = target;
 	this.method = method;
 	this.setup = setup;
+	this.setupAsync = setupAsync;
 	this.teardown = teardown;
+	this.teardownAsync = teardownAsync;
 };
 utest_TestFixture.__name__ = ["utest","TestFixture"];
 utest_TestFixture.prototype = {
 	target: null
 	,method: null
 	,setup: null
+	,setupAsync: null
 	,teardown: null
+	,teardownAsync: null
 	,__class__: utest_TestFixture
 };
 var utest_TestHandler = function(fixture) {
@@ -2376,18 +2410,29 @@ utest_TestHandler.prototype = {
 	,execute: function() {
 		try {
 			this.executeMethod(this.fixture.setup);
-			try {
-				this.executeMethod(this.fixture.method);
-			} catch( e ) {
-				haxe_CallStack.lastException = e;
-				if (e instanceof js__$Boot_HaxeError) e = e.val;
-				this.results.add(utest_Assertation.Error(e,utest_TestHandler.exceptionStack()));
-			}
-		} catch( e1 ) {
-			haxe_CallStack.lastException = e1;
-			if (e1 instanceof js__$Boot_HaxeError) e1 = e1.val;
-			this.results.add(utest_Assertation.SetupError(e1,utest_TestHandler.exceptionStack()));
+			var f = $bind(this,this.executeAsync);
+			var tmp = function() {
+				f();
+			};
+			this.executeAsyncMethod(this.fixture.setupAsync,tmp);
+		} catch( e ) {
+			haxe_CallStack.lastException = e;
+			if (e instanceof js__$Boot_HaxeError) e = e.val;
+			this.results.add(utest_Assertation.SetupError(e,utest_TestHandler.exceptionStack()));
+			this.executeFinally();
 		}
+	}
+	,executeAsync: function() {
+		try {
+			this.executeMethod(this.fixture.method);
+		} catch( e ) {
+			haxe_CallStack.lastException = e;
+			if (e instanceof js__$Boot_HaxeError) e = e.val;
+			this.results.add(utest_Assertation.Error(e,utest_TestHandler.exceptionStack()));
+		}
+		this.executeFinally();
+	}
+	,executeFinally: function() {
 		this.onPrecheck.dispatch(this);
 		this.checkTested();
 	}
@@ -2477,6 +2522,15 @@ utest_TestHandler.prototype = {
 		var o = this.fixture.target;
 		Reflect.field(this.fixture.target,name).apply(o,[]);
 	}
+	,executeAsyncMethod: function(name,done) {
+		if(name == null) {
+			done();
+			return;
+		}
+		this.bindHandler();
+		var o = this.fixture.target;
+		Reflect.field(this.fixture.target,name).apply(o,[done]);
+	}
 	,tested: function() {
 		if(this.results.length == 0) {
 			this.results.add(utest_Assertation.Warning("no assertions"));
@@ -2492,11 +2546,19 @@ utest_TestHandler.prototype = {
 	,completed: function() {
 		try {
 			this.executeMethod(this.fixture.teardown);
+			var f = $bind(this,this.completedFinally);
+			var tmp = function() {
+				f();
+			};
+			this.executeAsyncMethod(this.fixture.teardownAsync,tmp);
 		} catch( e ) {
 			haxe_CallStack.lastException = e;
 			if (e instanceof js__$Boot_HaxeError) e = e.val;
 			this.results.add(utest_Assertation.TeardownError(e,utest_TestHandler.exceptionStack(2)));
+			this.completedFinally();
 		}
+	}
+	,completedFinally: function() {
 		this.unbindHandler();
 		this.onComplete.dispatch(this);
 	}
@@ -2513,7 +2575,9 @@ utest_TestResult.ofHandler = function(handler) {
 	r.pack = path.join(".");
 	r.method = handler.fixture.method;
 	r.setup = handler.fixture.setup;
+	r.setupAsync = handler.fixture.setupAsync;
 	r.teardown = handler.fixture.teardown;
+	r.teardownAsync = handler.fixture.teardownAsync;
 	r.assertations = handler.results;
 	return r;
 };
@@ -2522,7 +2586,9 @@ utest_TestResult.prototype = {
 	,cls: null
 	,method: null
 	,setup: null
+	,setupAsync: null
 	,teardown: null
+	,teardownAsync: null
 	,assertations: null
 	,allOk: function() {
 		var _g_head = this.assertations.h;
@@ -2585,7 +2651,7 @@ utest_ui_common_ClassResult.prototype = {
 		var key = result.methodName;
 		var _this = this.fixtures;
 		if(__map_reserved[key] != null ? _this.existsReserved(key) : _this.h.hasOwnProperty(key)) {
-			throw new js__$Boot_HaxeError("invalid duplicated fixture result");
+			throw new js__$Boot_HaxeError("invalid duplicated fixture: " + this.className + "." + result.methodName);
 		}
 		this.stats.wire(result.stats);
 		this.methods++;

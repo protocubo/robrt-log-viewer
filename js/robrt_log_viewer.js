@@ -306,7 +306,7 @@ Main.ansiExecute = function(output) {
 };
 Main.renderCommand = function(cmd,opts) {
 	var ret = tink_template__$Html_Html_$Impl_$.buffer();
-	var this1 = "<div class=\"cmd-container ";
+	var this1 = "<article class=\"cmd-container ";
 	ret.s += this1;
 	if(cmd.output.length > 0) {
 		var this11 = " allow-expansion ";
@@ -318,7 +318,7 @@ Main.renderCommand = function(cmd,opts) {
 	}
 	var this13 = "\">";
 	ret.s += this13;
-	var this14 = "<div class=\"cmd\">\n\t\t<pre><code><span class=\"line-number\">";
+	var this14 = "<section class=\"cmd\">\n\t\t<pre><code><span class=\"line-number\">";
 	ret.s += this14;
 	var b = tink_template__$Html_Html_$Impl_$.of(opts.lineNumber++);
 	ret.s += b;
@@ -346,7 +346,7 @@ Main.renderCommand = function(cmd,opts) {
 		var this111 = "s</span>";
 		ret.s += this111;
 	}
-	var this112 = "</code></pre>\n\t</div>\n\t<div class=\"output\">\n\t";
+	var this112 = "</code></pre>\n\t</section>\n\t<section class=\"output\">\n\t";
 	ret.s += this112;
 	var _g = 0;
 	var _g1 = Main.ansiExecute(cmd.output);
@@ -363,18 +363,18 @@ Main.renderCommand = function(cmd,opts) {
 		var this115 = "</code></pre>\n\t";
 		ret.s += this115;
 	}
-	var this116 = "\n\t</div>\n</div>\n";
+	var this116 = "\n\t</section>\n</article>\n";
 	ret.s += this116;
 	var this2 = ret.s;
 	return this2;
 };
 Main.renderMessage = function(msg) {
 	var ret = tink_template__$Html_Html_$Impl_$.buffer();
-	var this1 = "<div class=\"message\">\n\t<pre><code><span class=\"line-number\">_</span># ";
+	var this1 = "<article class=\"message\">\n\t<pre><code><span class=\"pseudo-line-number\"></span># ";
 	ret.s += this1;
 	var b = tink_template__$Html_Html_$Impl_$.escape(msg);
 	ret.s += b;
-	var this11 = "<span class=\"exit-code\">?</span></code></pre>\n</div>\n";
+	var this11 = "<span class=\"exit-code\">?</span></code></pre>\n</article>\n";
 	ret.s += this11;
 	var this2 = ret.s;
 	return this2;

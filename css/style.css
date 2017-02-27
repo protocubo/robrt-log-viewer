@@ -11,11 +11,14 @@ pre {
 pre:hover {
   background-color: #222;
 }
+a {
+  color: #FF6C60;
+}
 ::selection {
   color: #333;
   background-color: #FFF;
 }
-.line-number {
+.line-number, .pseudo-line-number {
   color: #999;
   display: inline-block;
   width: 75px;

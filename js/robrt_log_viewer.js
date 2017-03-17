@@ -1,4 +1,4 @@
-// The Robrt Log Viewer.  Copyright (c) 2016, Jonas Malaco, Rafael Craice and authors of other contributions.  This generated code and its source code are licensed under the BSD 2-clause license.  More details in the repository: <https://github.com/protocubo/robrt-log-viewer>.  Generated with Haxe.
+// The Robrt Log Viewer.  Copyright (c) 2016–2017, Jonas Malaco, Rafael Craice and authors of other contributions.  This generated code and its source code are licensed under the BSD 2-clause license.  More details in the repository: <https://github.com/protocubo/robrt-log-viewer>.  Generated with Haxe.
 (function ($global) { "use strict";
 var $estr = function() { return js_Boot.__string_rec(this,''); };
 function $extend(from, fields) {
@@ -309,64 +309,64 @@ Main.renderCommand = function(cmd,opts) {
 	var this1 = "<article class=\"cmd-container ";
 	ret.s += this1;
 	if(cmd.output.length > 0) {
-		var this11 = " allow-expansion ";
-		ret.s += this11;
+		var this2 = " allow-expansion ";
+		ret.s += this2;
 	}
 	if(cmd.exit != "0") {
-		var this12 = " expanded ";
-		ret.s += this12;
+		var this3 = " expanded ";
+		ret.s += this3;
 	}
-	var this13 = "\">";
-	ret.s += this13;
-	var this14 = "<section class=\"cmd\">\n\t\t<pre><code><span class=\"line-number\">";
-	ret.s += this14;
+	var this4 = "\">";
+	ret.s += this4;
+	var this5 = "<section class=\"cmd\">\n\t\t<pre><code><span class=\"line-number\">";
+	ret.s += this5;
 	var b = tink_template__$Html_Html_$Impl_$.of(opts.lineNumber++);
 	ret.s += b;
-	var this15 = "</span>$ ";
-	ret.s += this15;
+	var this6 = "</span>$ ";
+	ret.s += this6;
 	var b1 = tink_template__$Html_Html_$Impl_$.escape(cmd.cmd);
 	ret.s += b1;
-	var this16 = "<span class=\"exit-code ";
-	ret.s += this16;
+	var this7 = "<span class=\"exit-code ";
+	ret.s += this7;
 	if(cmd.exit != "0") {
-		var this17 = "alert";
-		ret.s += this17;
+		var this8 = "alert";
+		ret.s += this8;
 	}
-	var this18 = "\">";
-	ret.s += this18;
+	var this9 = "\">";
+	ret.s += this9;
 	var b2 = tink_template__$Html_Html_$Impl_$.escape(cmd.exit);
 	ret.s += b2;
-	var this19 = "</span>";
-	ret.s += this19;
+	var this10 = "</span>";
+	ret.s += this10;
 	if(cmd.duration != null) {
-		var this110 = "<span class=\"duration\">";
-		ret.s += this110;
-		var b3 = tink_template__$Html_Html_$Impl_$.of(Math.round(cmd.duration) / 1e3);
+		var this11 = "<span class=\"duration\">";
+		ret.s += this11;
+		var b3 = tink_template__$Html_Html_$Impl_$.escape(thx_format_NumberFormat.fixed(cmd.duration / 1e3,3));
 		ret.s += b3;
-		var this111 = "s</span>";
-		ret.s += this111;
+		var this12 = "s</span>";
+		ret.s += this12;
 	}
-	var this112 = "</code></pre>\n\t</section>\n\t<section class=\"output\">\n\t";
-	ret.s += this112;
+	var this13 = "</code></pre>\n\t</section>\n\t<section class=\"output\">\n\t";
+	ret.s += this13;
 	var _g = 0;
 	var _g1 = Main.ansiExecute(cmd.output);
 	while(_g < _g1.length) {
 		var li = _g1[_g];
 		++_g;
-		var this113 = "\n\t\t<pre><code><span class=\"line-number\">";
-		ret.s += this113;
+		var this14 = "\n\t\t<pre><code><span class=\"line-number\">";
+		ret.s += this14;
 		var b4 = tink_template__$Html_Html_$Impl_$.of(opts.lineNumber++);
 		ret.s += b4;
-		var this114 = "</span>";
-		ret.s += this114;
+		var this15 = "</span>";
+		ret.s += this15;
 		ret.s += li;
-		var this115 = "</code></pre>\n\t";
-		ret.s += this115;
+		var this16 = "</code></pre>\n\t";
+		ret.s += this16;
 	}
-	var this116 = "\n\t</section>\n</article>\n";
-	ret.s += this116;
-	var this2 = ret.s;
-	return this2;
+	var this17 = "\n\t</section>\n</article>\n";
+	ret.s += this17;
+	var this18 = ret.s;
+	return this18;
 };
 Main.renderMessage = function(msg) {
 	var ret = tink_template__$Html_Html_$Impl_$.buffer();
@@ -374,10 +374,10 @@ Main.renderMessage = function(msg) {
 	ret.s += this1;
 	var b = tink_template__$Html_Html_$Impl_$.escape(msg);
 	ret.s += b;
-	var this11 = "<span class=\"exit-code\">?</span></code></pre>\n</article>\n";
-	ret.s += this11;
-	var this2 = ret.s;
-	return this2;
+	var this2 = "<span class=\"exit-code\">?</span></code></pre>\n</article>\n";
+	ret.s += this2;
+	var this3 = ret.s;
+	return this3;
 };
 Main.setExpansionActions = function(container) {
 	container.click(function(e) {
@@ -598,6 +598,13 @@ StringTools.rtrim = function(s) {
 };
 StringTools.trim = function(s) {
 	return StringTools.ltrim(StringTools.rtrim(s));
+};
+StringTools.rpad = function(s,c,l) {
+	if(c.length <= 0) {
+		return s;
+	}
+	while(s.length < l) s += c;
+	return s;
 };
 StringTools.replace = function(s,sub,by) {
 	return s.split(sub).join(by);
@@ -1678,6 +1685,308 @@ js_html_compat_Uint8Array._subarray = function(start,end) {
 	var a = js_html_compat_Uint8Array._new(this.slice(start,end));
 	a.byteOffset = start;
 	return a;
+};
+var thx_Either = { __ename__ : ["thx","Either"], __constructs__ : ["Left","Right"] };
+thx_Either.Left = function(value) { var $x = ["Left",0,value]; $x.__enum__ = thx_Either; $x.toString = $estr; return $x; };
+thx_Either.Right = function(value) { var $x = ["Right",1,value]; $x.__enum__ = thx_Either; $x.toString = $estr; return $x; };
+var thx_Floats = function() { };
+thx_Floats.__name__ = ["thx","Floats"];
+thx_Floats.roundTo = function(f,decimals) {
+	var p = Math.pow(10,decimals);
+	return Math.round(f * p) / p;
+};
+var thx_Ints = function() { };
+thx_Ints.__name__ = ["thx","Ints"];
+thx_Ints.parse = function(s,base) {
+	if(null == base) {
+		if(s.substring(0,2) == "0x") {
+			base = 16;
+		} else {
+			base = 10;
+		}
+	}
+	var v = parseInt(s,base);
+	if(isNaN(v)) {
+		return null;
+	} else {
+		return v;
+	}
+};
+var thx_culture_DateFormatInfo = function(calendarWeekRuleIndex,calendarWeekRuleName,designatorAm,designatorPm,firstDayOfWeekIndex,firstDayOfWeekName,nameCalendar,nameCalendarNative,nameDays,nameDaysAbbreviated,nameDaysShortest,nameMonths,nameMonthsAbbreviated,nameMonthGenitives,nameMonthGenitivesAbbreviated,patternDateLong,patternDateShort,patternDateTimeFull,patternDateTimeSortable,patternMonthDay,patternRfc1123,patternTimeLong,patternTimeShort,patternUniversalSortable,patternYearMonth,separatorDate,separatorTime) {
+	this.calendarWeekRuleIndex = calendarWeekRuleIndex;
+	this.calendarWeekRuleName = calendarWeekRuleName;
+	this.designatorAm = designatorAm;
+	this.designatorPm = designatorPm;
+	this.firstDayOfWeekIndex = firstDayOfWeekIndex;
+	this.firstDayOfWeekName = firstDayOfWeekName;
+	this.nameCalendar = nameCalendar;
+	this.nameCalendarNative = nameCalendarNative;
+	this.nameDays = nameDays;
+	this.nameDaysAbbreviated = nameDaysAbbreviated;
+	this.nameDaysShortest = nameDaysShortest;
+	this.nameMonths = nameMonths;
+	this.nameMonthsAbbreviated = nameMonthsAbbreviated;
+	this.nameMonthGenitives = nameMonthGenitives;
+	this.nameMonthGenitivesAbbreviated = nameMonthGenitivesAbbreviated;
+	this.patternDateLong = patternDateLong;
+	this.patternDateShort = patternDateShort;
+	this.patternDateTimeFull = patternDateTimeFull;
+	this.patternDateTimeSortable = patternDateTimeSortable;
+	this.patternMonthDay = patternMonthDay;
+	this.patternRfc1123 = patternRfc1123;
+	this.patternTimeLong = patternTimeLong;
+	this.patternTimeShort = patternTimeShort;
+	this.patternUniversalSortable = patternUniversalSortable;
+	this.patternYearMonth = patternYearMonth;
+	this.separatorDate = separatorDate;
+	this.separatorTime = separatorTime;
+};
+thx_culture_DateFormatInfo.__name__ = ["thx","culture","DateFormatInfo"];
+thx_culture_DateFormatInfo.prototype = {
+	calendarWeekRuleIndex: null
+	,calendarWeekRuleName: null
+	,designatorAm: null
+	,designatorPm: null
+	,firstDayOfWeekIndex: null
+	,firstDayOfWeekName: null
+	,nameCalendar: null
+	,nameCalendarNative: null
+	,nameDays: null
+	,nameDaysAbbreviated: null
+	,nameDaysShortest: null
+	,nameMonths: null
+	,nameMonthsAbbreviated: null
+	,nameMonthGenitives: null
+	,nameMonthGenitivesAbbreviated: null
+	,patternDateLong: null
+	,patternDateShort: null
+	,patternDateTimeFull: null
+	,patternDateTimeSortable: null
+	,patternMonthDay: null
+	,patternRfc1123: null
+	,patternTimeLong: null
+	,patternTimeShort: null
+	,patternUniversalSortable: null
+	,patternYearMonth: null
+	,separatorDate: null
+	,separatorTime: null
+	,__class__: thx_culture_DateFormatInfo
+};
+var thx_culture_NumberFormatInfo = function(decimalDigitsCurrency,decimalDigitsNumber,decimalDigitsPercent,groupSizesCurrency,groupSizesNumber,groupSizesPercent,patternNegativeCurrency,patternNegativeNumber,patternNegativePercent,patternPositiveCurrency,patternPositivePercent,separatorDecimalCurrency,separatorDecimalNumber,separatorDecimalPercent,separatorGroupCurrency,separatorGroupNumber,separatorGroupPercent,signNegative,signPositive,symbolCurrency,symbolNaN,symbolNegativeInfinity,symbolPercent,symbolPermille,symbolPositiveInfinity) {
+	this.decimalDigitsCurrency = decimalDigitsCurrency;
+	this.decimalDigitsNumber = decimalDigitsNumber;
+	this.decimalDigitsPercent = decimalDigitsPercent;
+	this.groupSizesCurrency = groupSizesCurrency;
+	this.groupSizesNumber = groupSizesNumber;
+	this.groupSizesPercent = groupSizesPercent;
+	this.patternNegativeCurrency = patternNegativeCurrency;
+	this.patternNegativeNumber = patternNegativeNumber;
+	this.patternNegativePercent = patternNegativePercent;
+	this.patternPositiveCurrency = patternPositiveCurrency;
+	this.patternPositivePercent = patternPositivePercent;
+	this.separatorDecimalCurrency = separatorDecimalCurrency;
+	this.separatorDecimalNumber = separatorDecimalNumber;
+	this.separatorDecimalPercent = separatorDecimalPercent;
+	this.separatorGroupCurrency = separatorGroupCurrency;
+	this.separatorGroupNumber = separatorGroupNumber;
+	this.separatorGroupPercent = separatorGroupPercent;
+	this.signNegative = signNegative;
+	this.signPositive = signPositive;
+	this.symbolCurrency = symbolCurrency;
+	this.symbolNaN = symbolNaN;
+	this.symbolNegativeInfinity = symbolNegativeInfinity;
+	this.symbolPercent = symbolPercent;
+	this.symbolPermille = symbolPermille;
+	this.symbolPositiveInfinity = symbolPositiveInfinity;
+};
+thx_culture_NumberFormatInfo.__name__ = ["thx","culture","NumberFormatInfo"];
+thx_culture_NumberFormatInfo.prototype = {
+	decimalDigitsCurrency: null
+	,decimalDigitsNumber: null
+	,decimalDigitsPercent: null
+	,groupSizesCurrency: null
+	,groupSizesNumber: null
+	,groupSizesPercent: null
+	,patternNegativeCurrency: null
+	,patternNegativeNumber: null
+	,patternNegativePercent: null
+	,patternPositiveCurrency: null
+	,patternPositivePercent: null
+	,separatorDecimalCurrency: null
+	,separatorDecimalNumber: null
+	,separatorDecimalPercent: null
+	,separatorGroupCurrency: null
+	,separatorGroupNumber: null
+	,separatorGroupPercent: null
+	,signNegative: null
+	,signPositive: null
+	,symbolCurrency: null
+	,symbolNaN: null
+	,symbolNegativeInfinity: null
+	,symbolPercent: null
+	,symbolPermille: null
+	,symbolPositiveInfinity: null
+	,__class__: thx_culture_NumberFormatInfo
+};
+var thx_culture_Culture = function(code,dateTime,ietf,isNeutral,iso2,iso3,isRightToLeft,lcid,nameCalendar,nameEnglish,nameNative,nameRegionEnglish,nameRegionNative,number,separatorList,win3) {
+	this.code = code;
+	this.dateTime = dateTime;
+	this.ietf = ietf;
+	this.isNeutral = isNeutral;
+	this.iso2 = iso2;
+	this.iso3 = iso3;
+	this.isRightToLeft = isRightToLeft;
+	this.lcid = lcid;
+	this.nameCalendar = nameCalendar;
+	this.nameEnglish = nameEnglish;
+	this.nameNative = nameNative;
+	this.nameRegionEnglish = nameRegionEnglish;
+	this.nameRegionNative = nameRegionNative;
+	this.number = number;
+	this.separatorList = separatorList;
+	this.win3 = win3;
+};
+thx_culture_Culture.__name__ = ["thx","culture","Culture"];
+thx_culture_Culture.prototype = {
+	code: null
+	,dateTime: null
+	,ietf: null
+	,isNeutral: null
+	,iso2: null
+	,iso3: null
+	,isRightToLeft: null
+	,lcid: null
+	,nameCalendar: null
+	,nameEnglish: null
+	,nameNative: null
+	,nameRegionEnglish: null
+	,nameRegionNative: null
+	,number: null
+	,separatorList: null
+	,win3: null
+	,__class__: thx_culture_Culture
+};
+var thx_culture_Pattern = function() { };
+thx_culture_Pattern.__name__ = ["thx","culture","Pattern"];
+var thx_format_Format = function() { };
+thx_format_Format.__name__ = ["thx","format","Format"];
+thx_format_Format.get_defaultCulture = function() {
+	if(null != thx_format_Format.defaultCulture) {
+		return thx_format_Format.defaultCulture;
+	} else {
+		return thx_culture_Culture.invariant;
+	}
+};
+var thx_format_NumberFormat = function() { };
+thx_format_NumberFormat.__name__ = ["thx","format","NumberFormat"];
+thx_format_NumberFormat.fixed = function(f,precision,culture) {
+	var nf = thx_format_NumberFormat.numberFormat(culture);
+	if(isNaN(f)) {
+		return nf.symbolNaN;
+	}
+	if(!isFinite(f)) {
+		if(f < 0) {
+			return nf.symbolNegativeInfinity;
+		} else {
+			return nf.symbolPositiveInfinity;
+		}
+	}
+	var pattern = f < 0 ? thx_culture_Pattern.numberNegatives[nf.patternNegativeNumber] : "n";
+	var _0 = precision;
+	var t = null == _0 ? null : _0;
+	var formatted = thx_format_NumberFormat.value(f,t != null ? t : nf.decimalDigitsNumber,[0],"",nf.separatorDecimalNumber);
+	return StringTools.replace(pattern,"n",formatted);
+};
+thx_format_NumberFormat.intPart = function(s,groupSizes,groupSeparator) {
+	var buf = [];
+	var pos = 0;
+	var sizes = groupSizes.slice();
+	var size = sizes.shift();
+	var seg;
+	while(s.length > 0) if(size == 0) {
+		buf.unshift(s);
+		s = "";
+	} else if(s.length > size) {
+		buf.unshift(s.substring(s.length - size));
+		s = s.substring(0,s.length - size);
+		if(sizes.length > 0) {
+			size = sizes.shift();
+		}
+	} else {
+		buf.unshift(s);
+		s = "";
+	}
+	return buf.join(groupSeparator);
+};
+thx_format_NumberFormat.numberFormat = function(culture) {
+	if(null != culture && null != culture.number) {
+		return culture.number;
+	} else {
+		return thx_format_Format.get_defaultCulture().number;
+	}
+};
+thx_format_NumberFormat.pad = function(s,len,round) {
+	var _0 = s;
+	var t = null == _0 ? null : _0;
+	if(t != null) {
+		s = t;
+	} else {
+		s = "";
+	}
+	if(len > 0 && s.length > len) {
+		if(round) {
+			return s.substring(0,len - 1) + (Std.parseInt(s.substring(len - 1,len)) + (Std.parseInt(s.substring(len,len + 1)) >= 5 ? 1 : 0));
+		} else {
+			return s.substring(0,len);
+		}
+	} else {
+		return StringTools.rpad(s,"0",len);
+	}
+};
+thx_format_NumberFormat.splitOnDecimalSeparator = function(f) {
+	var p = ("" + f).split(".");
+	var i = p[0];
+	var _0 = p;
+	var t;
+	if(null == _0) {
+		t = null;
+	} else {
+		var _1 = _0[1];
+		if(null == _1) {
+			t = null;
+		} else {
+			t = _1;
+		}
+	}
+	var d = (t != null ? t : "").toLowerCase();
+	if(d.indexOf("e") >= 0) {
+		p = d.split("e");
+		d = p[0];
+		var e = thx_Ints.parse(p[1]);
+		if(e < 0) {
+			d = StringTools.rpad("","0",-e - 1) + i + d;
+			i = "0";
+		} else {
+			var s = i + d;
+			d = s.substring(e + 1);
+			i = thx_format_NumberFormat.pad(s,e + 1,false);
+		}
+	}
+	if(d.length > 0) {
+		return [i,d];
+	} else {
+		return [i];
+	}
+};
+thx_format_NumberFormat.value = function(f,precision,groupSizes,groupSeparator,decimalSeparator) {
+	f = Math.abs(thx_Floats.roundTo(f,precision));
+	var p = thx_format_NumberFormat.splitOnDecimalSeparator(f);
+	var buf = [];
+	buf.push(thx_format_NumberFormat.intPart(p[0],groupSizes,groupSeparator));
+	if(precision > 0) {
+		buf.push(thx_format_NumberFormat.pad(p[1],precision,true));
+	}
+	return buf.join(decimalSeparator);
 };
 var tink_template__$Html_Html_$Impl_$ = {};
 tink_template__$Html_Html_$Impl_$.__name__ = ["tink","template","_Html","Html_Impl_"];
@@ -3966,6 +4275,8 @@ if(ArrayBuffer.prototype.slice == null) {
 	ArrayBuffer.prototype.slice = js_html_compat_ArrayBuffer.sliceImpl;
 }
 var Uint8Array = $global.Uint8Array || js_html_compat_Uint8Array._new;
+thx_culture_Culture.cultures = new haxe_ds_StringMap();
+thx_culture_Culture.list = [];
 Assertion.enableAssert = true;
 Assertion.enableWeakAssert = true;
 Assertion.enableShow = true;
@@ -3973,6 +4284,10 @@ haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 haxe_crypto_Base64.BYTES = haxe_io_Bytes.ofString(haxe_crypto_Base64.CHARS);
 js_Boot.__toStr = ({ }).toString;
 js_html_compat_Uint8Array.BYTES_PER_ELEMENT = 1;
+thx_culture_DateFormatInfo.invariant = new thx_culture_DateFormatInfo(0,"FirstDay","AM","PM",0,"Sunday","Gregorian",null,["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],["Su","Mo","Tu","We","Th","Fr","Sa"],["January","February","March","April","May","June","July","August","September","October","November","December",""],["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],["January","February","March","April","May","June","July","August","September","October","November","December",""],["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"dddd, dd MMMM yyyy","MM/dd/yyyy","dddd, dd MMMM yyyy HH:mm:ss","yyyy'-'MM'-'dd'T'HH':'mm':'ss","MMMM dd","ddd, dd MMM yyyy HH':'mm':'ss 'GMT'","HH:mm:ss","HH:mm","yyyy'-'MM'-'dd HH':'mm':'ss'Z'","yyyy MMMM","/",":");
+thx_culture_NumberFormatInfo.invariant = new thx_culture_NumberFormatInfo(2,2,2,[3],[3],[3],0,1,0,0,0,".",".",".",",",",",",","-","+","¤","NaN","-Infinity","%","‰","Infinity");
+thx_culture_Culture.invariant = new thx_culture_Culture("",thx_culture_DateFormatInfo.invariant,"",false,"iv","IVL",false,127,"Gregorian","Invariant Language","Invariant Language","Invariant Country","Invariant Country",thx_culture_NumberFormatInfo.invariant,",","IVL");
+thx_culture_Pattern.numberNegatives = ["(n)","-n","- n","n-","n -"];
 utest_ui_text_HtmlReport.platform = "javascript";
 Main.main();
 })(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);

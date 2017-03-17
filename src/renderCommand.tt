@@ -1,6 +1,6 @@
 <article class="cmd-container (:if cmd.output.length > 0:) allow-expansion (:end:)(:if cmd.exit != "0":) expanded (:end:)">(:* TODO remove hack for tink_template's issue with whitespace between ifs *:)
 	<section class="cmd">
-		<pre><code><span class="line-number">(:opts.lineNumber++:)</span>$ (:cmd.cmd:)<span class="exit-code (:if cmd.exit != "0":)alert(:end:)">(:cmd.exit:)</span>(:if cmd.duration != null:)<span class="duration">(:Math.round(cmd.duration)/1e3:)s</span>(:end:)</code></pre>
+		<pre><code><span class="line-number">(:opts.lineNumber++:)</span>$ (:cmd.cmd:)<span class="exit-code (:if cmd.exit != "0":)alert(:end:)">(:cmd.exit:)</span>(:if cmd.duration != null:)<span class="duration">(:thx.format.NumberFormat.fixed(cmd.duration/1e3, 3):)s</span>(:end:)</code></pre>
 	</section>
 	<section class="output">
 	(:for li in ansiExecute(cmd.output):)
